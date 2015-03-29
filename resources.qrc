@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/marquee-square.png</file>
+        <file>images/bg.png</file>
+        <file>images/brush-tool.png</file>
+        <file>images/eraser-tool.png</file>
+        <file>images/pen-tool.png</file>
+        <file>images/transform-tool.png</file>
+        <file>images/lasso-tool.png</file>
+    </qresource>
+</RCC>
