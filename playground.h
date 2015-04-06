@@ -1,48 +1,47 @@
 #ifndef PLAYGROUND_H
 #define PLAYGROUND_H
 
-#include <QFrame>
 #include <QGraphicsView>
+#include <QGraphicsSceneMouseEvent>
 #include <QTouchEvent>
 
-QT_BEGIN_NAMESPACE
-class QLabel;
-class QSlider;
-class QToolButton;
-QT_END_NAMESPACE
 
-class PlayGround;
-
+/*
 class GraphicsView : public QGraphicsView
 {
     Q_OBJECT
 public:
     GraphicsView(PlayGround *v) : QGraphicsView(), view(v) {
         setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-
         viewport()->setAttribute(Qt::WA_AcceptTouchEvents);
     }
 
 protected:
-#ifndef QT_NO_WHEELEVENT
-    void wheelEvent(QWheelEvent *);
-#endif
+
     //bool viewportEvent(QEvent *event);
 
+};
+*/
 
-private:
-    PlayGround *view;
-
-    double totalScaleFactor = 1;
+class MyGraphicsScene : public QGraphicsScene{
+  protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
 };
 
-class PlayGround : public QFrame
+
+
+class PlayGround : public QGraphicsView
 {
     Q_OBJECT
 public:
     explicit PlayGround(const QString &name, QWidget *parent = 0);
 
-    QGraphicsView *view() const;
+protected:
+#ifndef QT_NO_WHEELEVENT
+    void wheelEvent(QWheelEvent *);
+#endif
+    //void mouseMoveEvent(QMouseEvent *event);
+    //void mousePressEvent(QMouseEvent *event);
 
 public slots:
     void zoomIn(int level = 1);
@@ -50,28 +49,10 @@ public slots:
 
 private slots:
     void resetView();
-    void setResetButtonEnabled();
     void setupMatrix();
-    void togglePointerMode();
-    void toggleOpenGL();
-    void toggleAntialiasing();
     void print();
-    void rotateLeft();
-    void rotateRight();
 
 private:
-    GraphicsView *graphicsView;
-    QLabel *label;
-    QLabel *label2;
-    QToolButton *selectModeButton;
-    QToolButton *dragModeButton;
-    QToolButton *openGlButton;
-    QToolButton *antialiasButton;
-    QToolButton *printButton;
-    QToolButton *resetButton;
-    QSlider *zoomSlider;
-    QSlider *rotateSlider;
-
     int zoom=250;
 };
 

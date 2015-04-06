@@ -46,16 +46,16 @@ MainWindow::MainWindow(QWidget *parent)
     :QMainWindow(parent)
 {
     setObjectName("MainWindow");
-    setWindowTitle("PMIG");
+    setWindowTitle("PMIGEngine");
 
-    scene = new QGraphicsScene;
+    scene = new MyGraphicsScene;
 
-    QImage image(":/qt4logo.png");
+    QImage image("/Users/ying/Desktop/aa.png");
 
     // Populate scene
     int xx = 0;
     int nitems = 0;
-    for (int i = -11000; i < 11000; i += 110) {
+    for (int i = -5000; i < 5000; i += 110) {
         ++xx;
         int yy = 0;
         for (int j = -7000; j < 7000; j += 70) {
@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     PlayGround *playGround = new PlayGround("PlayGround");
-    playGround->view()->setScene(scene);
+    playGround->setScene(scene);
 
     centerScribbleArea = new ScribbleArea(this);
     setCentralWidget(playGround);
