@@ -150,7 +150,6 @@ void PlayGround::setupMatrix()
     toZoomAmount = toZoomAmount * ZOOM_PARAM;
 
     if(!isDragging){
-        qDebug()<<toTranslation.manhattanLength();
         if(toTranslation.manhattanLength() < 1)
             toTranslation = QPointF(0,0);
         horizontalScrollBar()->setValue(
