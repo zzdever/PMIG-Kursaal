@@ -9,9 +9,9 @@
 #include <cv.h>
 #include <highgui.h>
 
-
 #include "scribblearea.h"
 #include "toolbox.h"
+#include "playground.h"
 
 class ToolBar;
 QT_FORWARD_DECLARE_CLASS(QMenu)
@@ -22,6 +22,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+private:
     ScribbleArea *centerScribbleArea; ///< Area in the center
     QHash<ToolType::toolType, ToolTweak*> toolsToolBar;  ///< A list of all of toolbars of every tool
     ToolType::toolType currentToolType;  ///< Record the type of current selected tool
@@ -31,6 +32,8 @@ class MainWindow : public QMainWindow
     QMenu *filterMenu;  ///<  Menu Filter
     QMenu *windowWidgetMenu;  ///< Menu Window
     QMenu *aboutMenu;   ///< Menu about
+
+    QGraphicsScene *scene;
 
 public:
     /// Constructor

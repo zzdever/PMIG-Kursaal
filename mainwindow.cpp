@@ -48,8 +48,36 @@ MainWindow::MainWindow(QWidget *parent)
     setObjectName("MainWindow");
     setWindowTitle("PMIG");
 
+    scene = new QGraphicsScene;
+
+    QImage image(":/qt4logo.png");
+
+    // Populate scene
+    int xx = 0;
+    int nitems = 0;
+    for (int i = -11000; i < 11000; i += 110) {
+        ++xx;
+        int yy = 0;
+        for (int j = -7000; j < 7000; j += 70) {
+            ++yy;
+            qreal x = (i + 11000) / 22000.0;
+            qreal y = (j + 7000) / 14000.0;
+
+            QColor color(image.pixel(int(image.width() * x), int(image.height() * y)));
+            QGraphicsItem *item = new Chip(color, xx, yy);
+            item->setPos(QPointF(i, j));
+            scene->addItem(item);
+
+            ++nitems;
+        }
+    }
+
+
+    PlayGround *playGround = new PlayGround("PlayGround");
+    playGround->view()->setScene(scene);
+
     centerScribbleArea = new ScribbleArea(this);
-    setCentralWidget(centerScribbleArea);
+    setCentralWidget(playGround);
 
     centerScribbleArea->setAutoFillBackground(true);
     QPixmap bg(TILE_SIZE, TILE_SIZE);
@@ -73,12 +101,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     setupMenuBar();
 
-    setupWindowWidgets();
+    //setupWindowWidgets();
     DockOptions dockOptions = AnimatedDocks|AllowTabbedDocks;
     QMainWindow::setDockOptions(dockOptions);
 
-    statusBar()->showMessage(tr("Ready"));
-
+    //statusBar()->showMessage(tr("Ready"));
 }
 
 //MainWindow::~MainWindow()

@@ -8,6 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 qtHaveModule(printsupport): QT += printsupport
+qtHaveModule(opengl): QT += opengl
 
 TARGET = PMIG2DEngine
 TEMPLATE = app
@@ -19,13 +20,22 @@ SOURCES += main.cpp\
     scribblearea.cpp \
     panels.cpp \
     shared/hoverpoints.cpp \
-    toolbox.cpp
+    toolbox.cpp \
+    2DEngine/Shapes/P2DPolygonShape.cpp \
+    2DEngine/General/P2DMath.cpp \
+    2DEngine/General/P2DParams.cpp \
+    playground.cpp
 
 HEADERS  += mainwindow.h \
     scribblearea.h \
     panels.h \
     shared/hoverpoints.h \
-    toolbox.h
+    toolbox.h \
+    2DEngine/Shapes/P2DBaseShape.h \
+    2DEngine/Shapes/P2DPolygonShape.h \
+    2DEngine/General/P2DMath.h \
+    2DEngine/General/P2DParams.h \
+    playground.h
 
 FORMS    += mainwindow.ui
 

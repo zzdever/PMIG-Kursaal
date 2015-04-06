@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     app.setOrganizationName("PMIG Project");
     app.setApplicationName("PMIG");
     MainWindow mainWin;
-    mainWin.resize(1024,576);
+    //mainWin.resize(1024,576);
     mainWin.setWindowState(Qt::WindowMaximized);
     mainWin.show();
     return app.exec();
