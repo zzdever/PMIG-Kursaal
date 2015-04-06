@@ -62,11 +62,18 @@ PlayGround::PlayGround(const QString &name, QWidget *parent)
     : QGraphicsView(parent)
 {
     Q_UNUSED(name);
+
+    zoomAmount = toZoomAmount = 0.;
+    toTranslation = QPointF(0,0);
+    lastMousePressPos = QPoint(0,0);
+    isDragging = false;
+
     setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-    //setOptimizationFlags(QGraphicsView::DontSavePainterState);
+    setOptimizationFlags(QGraphicsView::DontSavePainterState);
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-    //setInteractive(QGraphicsView::ScrollHandDrag);
+    //setDragMode(QGraphicsView::ScrollHandDrag);
+    //setInteractive(false);
 
 #ifndef QT_NO_OPENGL
     setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
@@ -80,9 +87,9 @@ PlayGround::PlayGround(const QString &name, QWidget *parent)
 void PlayGround::wheelEvent(QWheelEvent *e)
 {
     if(e->delta() > 0) {
-        zoomIn(6);
+        toZoomAmount += ZOOM_STEP*(1-ZOOM_PARAM);
     } else {
-        zoomOut(6);
+        toZoomAmount -= ZOOM_STEP*(1-ZOOM_PARAM);
     }
 
     // Don't call superclass handler here
@@ -91,33 +98,67 @@ void PlayGround::wheelEvent(QWheelEvent *e)
 }
 #endif
 
-void MyGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    qDebug()<<"MyGraphicsScene"<<event->pos();
-    qDebug()<<"MyGraphicsScene scene"<<event->scenePos();
-    qDebug()<<"MyGraphicsScene screen"<<event->screenPos();
-}
 
-/*
+
 void PlayGround::mousePressEvent(QMouseEvent *event)
 {
-    qDebug()<<"PlayGround"<<event->pos();
+    if(event->button() == Qt::MiddleButton){
+        setCursor(Qt::ClosedHandCursor);
+        lastMousePressPos = event->pos();
+    }
+    QGraphicsView::mousePressEvent(event);
 }
-*/
+
+void PlayGround::mouseMoveEvent(QMouseEvent *event)
+{
+    if(event->buttons() == Qt::MiddleButton){
+        isDragging = true;
+        horizontalScrollBar()->setValue(
+                    horizontalScrollBar()->value() - (event->x() - lastMousePressPos.x()));
+        verticalScrollBar()->setValue(
+                    verticalScrollBar()->value() - (event->y() - lastMousePressPos.y()));
+
+        toTranslation = TRANS_STEP*(event->pos() - lastMousePressPos);
+
+        lastMousePressPos = event->pos();
+    }
+
+    QGraphicsView::mouseMoveEvent(event);
+}
+
+void PlayGround::mouseReleaseEvent(QMouseEvent *event)
+{
+    setCursor(Qt::ArrowCursor);
+    isDragging = false;
+
+    QGraphicsView::mouseReleaseEvent(event);
+}
+
 
 void PlayGround::resetView()
 {
-    //zoomSlider->setValue(250);
-    //rotateSlider->setValue(0);
     setupMatrix();
     ensureVisible(QRectF(0, 0, 0, 0));
-
-    //resetButton->setEnabled(false);
 }
 
 void PlayGround::setupMatrix()
 {
-    qreal scale = qPow(qreal(2), (zoom - 250) / qreal(50));
+    if(qAbs(toZoomAmount) < 0.02*ZOOM_PARAM)
+        toZoomAmount = 0;
+    zoomAmount += toZoomAmount;
+    qreal scale = qPow(qreal(2), zoomAmount);
+    toZoomAmount = toZoomAmount * ZOOM_PARAM;
+
+    if(!isDragging){
+        qDebug()<<toTranslation.manhattanLength();
+        if(toTranslation.manhattanLength() < 1)
+            toTranslation = QPointF(0,0);
+        horizontalScrollBar()->setValue(
+                    horizontalScrollBar()->value() - toTranslation.x());
+        verticalScrollBar()->setValue(
+                    verticalScrollBar()->value() - toTranslation.y());
+        toTranslation = toTranslation * TRANS_PARAM;
+    }
 
     QMatrix matrix;
     matrix.scale(scale, scale);
@@ -138,17 +179,10 @@ void PlayGround::print()
 #endif
 }
 
-void PlayGround::zoomIn(int level)
-{
-    zoom += 10;
-    setupMatrix();
-}
 
-void PlayGround::zoomOut(int level)
-{
-    zoom -= 10;
-    setupMatrix();
-}
+
+
+
 
 
 

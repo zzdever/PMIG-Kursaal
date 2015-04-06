@@ -2,9 +2,14 @@
 #define PLAYGROUND_H
 
 #include <QGraphicsView>
-#include <QGraphicsSceneMouseEvent>
 #include <QTouchEvent>
 
+#include "scenemanager.h"
+
+#define ZOOM_STEP 0.3
+#define ZOOM_PARAM 0.7
+#define TRANS_STEP 3
+#define TRANS_PARAM 0.7
 
 /*
 class GraphicsView : public QGraphicsView
@@ -23,29 +28,24 @@ protected:
 };
 */
 
-class MyGraphicsScene : public QGraphicsScene{
-  protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-};
-
-
 
 class PlayGround : public QGraphicsView
 {
     Q_OBJECT
 public:
     explicit PlayGround(const QString &name, QWidget *parent = 0);
+    void updateView(){
+        setupMatrix();
+    }
 
 protected:
 #ifndef QT_NO_WHEELEVENT
     void wheelEvent(QWheelEvent *);
 #endif
-    //void mouseMoveEvent(QMouseEvent *event);
-    //void mousePressEvent(QMouseEvent *event);
-
-public slots:
-    void zoomIn(int level = 1);
-    void zoomOut(int level = 1);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    //void paintEvent(QPaintEvent *event);
 
 private slots:
     void resetView();
@@ -53,7 +53,10 @@ private slots:
     void print();
 
 private:
-    int zoom=250;
+    double zoomAmount, toZoomAmount;
+    QPointF toTranslation;
+    QPoint lastMousePressPos;
+    bool isDragging;
 };
 
 

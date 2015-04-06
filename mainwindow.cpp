@@ -3,39 +3,8 @@
 /// to draw the graphic user interface,
 /// including toolbar, widget, menu, etc.
 ///
-#include <QAction>
-#include <QLayout>
-#include <QMenu>
-#include <QMenuBar>
-#include <QStatusBar>
-#include <QTextEdit>
-#include <QFile>
-#include <QDataStream>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QSignalMapper>
-#include <QApplication>
-#include <QPainter>
-#include <QMouseEvent>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QLabel>
-#include <QPushButton>
-#include <QDockWidget>
-#include <QImageWriter>
-#include <QtPrintSupport/QPrinter>
-#include <QtPrintSupport/QPrintDialog>
-#include <QBitmap>
-#include <QtEvents>
-#include <QFrame>
-#include <QMainWindow>
-#include <QObject>
-#include <qdebug.h>
-
 
 #include "mainwindow.h"
-#include "panels.h"
-
 
 #define TILE_SIZE 100
 
@@ -48,36 +17,14 @@ MainWindow::MainWindow(QWidget *parent)
     setObjectName("MainWindow");
     setWindowTitle("PMIGEngine");
 
-    scene = new MyGraphicsScene;
-
-    QImage image("/Users/ying/Desktop/aa.png");
-
-    // Populate scene
-    int xx = 0;
-    int nitems = 0;
-    for (int i = -5000; i < 5000; i += 110) {
-        ++xx;
-        int yy = 0;
-        for (int j = -7000; j < 7000; j += 70) {
-            ++yy;
-            qreal x = (i + 11000) / 22000.0;
-            qreal y = (j + 7000) / 14000.0;
-
-            QColor color(image.pixel(int(image.width() * x), int(image.height() * y)));
-            QGraphicsItem *item = new Chip(color, xx, yy);
-            item->setPos(QPointF(i, j));
-            scene->addItem(item);
-
-            ++nitems;
-        }
-    }
-
-
-    PlayGround *playGround = new PlayGround("PlayGround");
-    playGround->setScene(scene);
+    playGround = new PlayGround("PlayGround");
+    setCentralWidget(playGround);
+    sceneManager = new SceneManager;
+    sceneManager->setSceneRect(-10000,-10000,20000,20000);
+    playGround->setScene(sceneManager);
 
     centerScribbleArea = new ScribbleArea(this);
-    setCentralWidget(playGround);
+    //setCentralWidget(centerScribbleArea);
 
     centerScribbleArea->setAutoFillBackground(true);
     QPixmap bg(TILE_SIZE, TILE_SIZE);
@@ -106,6 +53,10 @@ MainWindow::MainWindow(QWidget *parent)
     QMainWindow::setDockOptions(dockOptions);
 
     //statusBar()->showMessage(tr("Ready"));
+
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(RefreshScene()));
+    timer->start(20);
 }
 
 //MainWindow::~MainWindow()

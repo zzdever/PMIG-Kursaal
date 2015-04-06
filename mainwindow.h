@@ -5,13 +5,44 @@
 #include <QTextEdit>
 #include <QHash>
 #include <QWidget>
+#include <QAction>
+#include <QLayout>
+#include <QMenu>
+#include <QMenuBar>
+#include <QStatusBar>
+#include <QTextEdit>
+#include <QFile>
+#include <QDataStream>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QSignalMapper>
+#include <QApplication>
+#include <QPainter>
+#include <QMouseEvent>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QLabel>
+#include <QPushButton>
+#include <QDockWidget>
+#include <QImageWriter>
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QPrintDialog>
+#include <QBitmap>
+#include <QtEvents>
+#include <QFrame>
+#include <QMainWindow>
+#include <QObject>
+#include <QTimer>
+#include <QDebug>
 
 #include <cv.h>
 #include <highgui.h>
 
 #include "scribblearea.h"
+#include "panels.h"
 #include "toolbox.h"
 #include "playground.h"
+#include "scenemanager.h"
 
 class ToolBar;
 QT_FORWARD_DECLARE_CLASS(QMenu)
@@ -33,7 +64,10 @@ private:
     QMenu *windowWidgetMenu;  ///< Menu Window
     QMenu *aboutMenu;   ///< Menu about
 
-    QGraphicsScene *scene;
+    SceneManager *sceneManager;
+    PlayGround *playGround;
+
+    QTimer *timer;
 
 public:
     /// Constructor
@@ -43,7 +77,8 @@ public:
 protected:
     /// Rewrite to handle save or discard before quit
     void closeEvent(QCloseEvent *event);
-//    void keyPressEvent(QKeyEvent *event);
+    //void keyPressEvent(QKeyEvent *event);
+    //void paintEvent(QPaintEvent *);
 
 
 private:
@@ -104,6 +139,11 @@ private slots:
 
     /// Ask and set the foreground and background color
     void setColor(int);
+
+    void RefreshScene(){
+        sceneManager->Render();
+        playGround->updateView();
+    }
 
 signals:
     /// Update color icons on the toolbox bar
