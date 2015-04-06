@@ -1,2 +1,4 @@
 *.user*
 2DEngine/
+*.pro
+*.pro.user
