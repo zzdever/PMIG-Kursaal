@@ -62,7 +62,7 @@ void SceneManager::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 
 
-DrawingPolygon::DrawingPolygon(QColor color, QPointF p)
+DrawingPolygonItem::DrawingPolygon(QColor color, QPointF p)
 {
     points.push_back(p);
     color.setAlpha(49);
@@ -74,17 +74,17 @@ DrawingPolygon::DrawingPolygon(QColor color, QPointF p)
     //setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
 }
 
-void DrawingPolygon::AddPoint(QPointF p)
+void DrawingPolygonItem::AddPoint(QPointF p)
 {
     points.push_back(p);
 }
 
-QRectF DrawingPolygon::boundingRect() const
+QRectF DrawingPolygonItem::boundingRect() const
 {
     return QRectF(0, 0, 100, 100);
 }
 
-void DrawingPolygon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void DrawingPolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);

@@ -8,6 +8,8 @@
 
 #include "playground.h"
 
+#include "p2dengine/objects/p2dpolygonobject.h"
+
 class DrawingPolygon;
 
 class SceneManager : public QGraphicsScene{
@@ -20,6 +22,8 @@ private:
 
     bool isDrawing;
     DrawingPolygon *drawingItem;
+
+    P2DPolygonObject *obj;
 
     int tmp;
 
@@ -36,10 +40,10 @@ protected:
 #include <QGraphicsItem>
 #include <QtWidgets>
 
-class DrawingPolygon : public QGraphicsItem
+class DrawingPolygonItem : public QGraphicsItem
 {
 public:
-    DrawingPolygon(QColor color, QPointF p);
+    DrawingPolygonItem(QColor color, QPointF p);
     void AddPoint(QPointF p);
     QVector<QPointF> GetPoints(){
         return points;
