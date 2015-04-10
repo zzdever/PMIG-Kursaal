@@ -29,7 +29,6 @@ void SceneManager::mousePressEvent(QGraphicsSceneMouseEvent *event)
     if(event->button() == Qt::LeftButton && itemAt(event->scenePos(), QTransform()) == nullptr){
         isDrawing = true;
         drawingItem = new DrawingPolygon(QColor(qrand()%255, qrand()%255, qrand()%255), event->scenePos());
-        //drawingItem->setPos(event->scenePos());
         addItem(drawingItem);
     }
 
@@ -66,10 +65,13 @@ void SceneManager::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 DrawingPolygon::DrawingPolygon(QColor color, QPointF p)
 {
     points.push_back(p);
+    color.setAlpha(49);
     this->color = color;
 
     // This should be maximized, put it on the top of everything.
     setZValue(100);
+
+    //setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
 }
 
 void DrawingPolygon::AddPoint(QPointF p)
@@ -79,7 +81,7 @@ void DrawingPolygon::AddPoint(QPointF p)
 
 QRectF DrawingPolygon::boundingRect() const
 {
-    return QRectF(0, 0, 0, 0);
+    return QRectF(0, 0, 100, 100);
 }
 
 void DrawingPolygon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -92,12 +94,19 @@ void DrawingPolygon::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     if (points.size() > 1) {
         QPen p = painter->pen();
         QBrush b = painter->brush();
-        painter->setPen(QPen(Qt::black, 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter->setBrush(QBrush(color, Qt::Dense7Pattern));
+
+        QPen pnew(QPen(Qt::black, 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        pnew.setCosmetic(true);
+        painter->setPen(pnew);
+        QBrush bnew(QBrush(color, Qt::SolidPattern));
+
+        painter->setBrush(bnew);
+
         QPainterPath path;
-        path.moveTo(points.first());
+
+        path.moveTo((points.first()));
         for (int i = 1; i < points.size(); ++i)
-            path.lineTo(points.at(i));
+            path.lineTo((points.at(i)));
         painter->drawPath(path);
         painter->setPen(p);
         painter->setBrush(b);

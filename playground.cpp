@@ -148,6 +148,7 @@ void PlayGround::setupMatrix()
     zoomAmount += toZoomAmount;
     qreal scale = qPow(qreal(2), zoomAmount);
     toZoomAmount = toZoomAmount * ZOOM_PARAM;
+    //qDebug()<<zoomAmount;
 
     if(!isDragging){
         if(toTranslation.manhattanLength() < 1)

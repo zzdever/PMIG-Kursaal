@@ -16,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     setObjectName("MainWindow");
     setWindowTitle("PMIGEngine");
+    setAutoFillBackground(true);
+
 
     playGround = new PlayGround("PlayGround");
     setCentralWidget(playGround);
