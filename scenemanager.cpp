@@ -26,7 +26,7 @@ void SceneManager::Render()
 void SceneManager::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     // We can only draw in a blank area.
-    if(itemAt(event->scenePos(), QTransform()) == nullptr){
+    if(event->button() == Qt::LeftButton && itemAt(event->scenePos(), QTransform()) == nullptr){
         isDrawing = true;
         drawingItem = new DrawingPolygon(QColor(qrand()%255, qrand()%255, qrand()%255), event->scenePos());
         //drawingItem->setPos(event->scenePos());
