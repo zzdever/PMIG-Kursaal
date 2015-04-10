@@ -41,6 +41,9 @@ class DrawingPolygon : public QGraphicsItem
 public:
     DrawingPolygon(QColor color, QPointF p);
     void AddPoint(QPointF p);
+    QVector<QPointF> GetPoints(){
+        return points;
+    }
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget);
