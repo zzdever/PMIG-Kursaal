@@ -99,11 +99,9 @@ void DrawingPolygon::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         pnew.setCosmetic(true);
         painter->setPen(pnew);
         QBrush bnew(QBrush(color, Qt::SolidPattern));
-
         painter->setBrush(bnew);
 
         QPainterPath path;
-
         path.moveTo((points.first()));
         for (int i = 1; i < points.size(); ++i)
             path.lineTo((points.at(i)));
