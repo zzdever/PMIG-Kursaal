@@ -1,7 +1,8 @@
 #ifndef P2D_POLYGON_OBJECT_H
 #define P2D_POLYGON_OBJECT_H
 
-#include <p2dengine/objects/p2dbaseobject.h>
+#include "p2dbaseobject.h"
+//#include "p2dengine/objects/p2dbaseobject.h"
 
 /// A convex polygon. It is assumed that the interior of the polygon is to
 /// the left of each edge.

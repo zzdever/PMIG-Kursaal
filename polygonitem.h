@@ -9,7 +9,8 @@
 class PolygonItem : public QGraphicsItem
 {
 public:
-    PolygonItem(const QColor &color, QVector<QPointF> points);
+    PolygonItem(QColor color, QVector<QPointF> points);
+    ~PolygonItem();
 
     QRectF boundingRect() const;
     QPainterPath shape() const;
@@ -26,7 +27,7 @@ private:
     int x;
     int y;
     QColor color;
-    QVector<QPointF> stuff;
+    QPainterPath path;
 };
 
 #endif // POLYGONITEM_H

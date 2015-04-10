@@ -1,15 +1,25 @@
 #include "polygonitem.h"
 
 #include <QtWidgets>
+#include "p2dengine/general/p2dparams.h"
 
-PolygonItem::PolygonItem(const QColor &color, QVector<QPointF> points)
+PolygonItem::PolygonItem(QColor color, QVector<QPointF> points)
 {
+    qDebug()<<"input size"<<points.size();
     p2DPolygonObject = new P2DPolygonObject;
-    P2DVec2* pts[P2D_MAX_POLYGON_VERTICES];
+    P2DVec2 pts[P2D_MAX_POLYGON_VERTICES];
     for(int i=0; i<points.size(); i++){
-        pts[i] = new P2DVec2(points.at(i).x(), points.at(i).y());
+        pts[i] = P2DVec2(points.at(i).x(), points.at(i).y());
     }
-    p2DPolygonObject->SetPoints(pts, points.size());
+    p2DPolygonObject->SetPoints((const P2DVec2*)pts, points.size());
+
+    int count = p2DPolygonObject->GetVertexCount();
+    qDebug()<<"output size"<<count;
+    path.moveTo(QPointF(p2DPolygonObject->GetVertex(0).x,
+                        p2DPolygonObject->GetVertex(0).y));
+    for (int i = 1; i < count; ++i)
+        path.lineTo(QPointF(p2DPolygonObject->GetVertex(i).x,
+                            p2DPolygonObject->GetVertex(i).y));
 
     this->color = color;
     setZValue(0);
@@ -18,39 +28,40 @@ PolygonItem::PolygonItem(const QColor &color, QVector<QPointF> points)
     setAcceptHoverEvents(true);
 }
 
+PolygonItem::~PolygonItem()
+{
+    delete p2DPolygonObject;
+}
+
 QRectF PolygonItem::boundingRect() const
 {
     return QRectF(0, 0, 110, 70);
 }
 
 QPainterPath PolygonItem::shape() const
-{
-    QPainterPath path;
-    path.addRect(14, 14, 82, 42);
+{    
     return path;
 }
 
 void PolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option);
     Q_UNUSED(widget);
 
     int count = p2DPolygonObject->GetVertexCount();
+
+    QColor c = (option->state & QStyle::State_MouseOver) ? Qt::black : this->color;
 
     if (count > 1) {
         QPen p = painter->pen();
         QBrush b = painter->brush();
 
-        QPen pnew(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        QPen pnew(QPen(c, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         //pnew.setCosmetic(true);
         painter->setPen(pnew);
-        QBrush bnew(QBrush(color.lighter(70), Qt::SolidPattern));
+        QBrush bnew(QBrush(c, Qt::SolidPattern));
         painter->setBrush(bnew);
 
-        QPainterPath path;
-
-        path.moveTo((points.first()));
-        for (int i = 1; i < points.size(); ++i)
-            path.lineTo((points.at(i)));
         painter->drawPath(path);
         painter->setPen(p);
         painter->setBrush(b);
@@ -59,18 +70,15 @@ void PolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
 void PolygonItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    qDebug()<<"pressed";
     QGraphicsItem::mousePressEvent(event);
     update();
 }
 
 void PolygonItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->modifiers() & Qt::ShiftModifier) {
-        stuff << event->pos();
-        update();
-        return;
-    }
     QGraphicsItem::mouseMoveEvent(event);
+    update();
 }
 
 void PolygonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)

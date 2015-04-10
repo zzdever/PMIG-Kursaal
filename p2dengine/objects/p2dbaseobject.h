@@ -2,7 +2,8 @@
 #define P2D_BASE_OBJECT_H
 
 //#include <BlockAllocator.h>
-#include <p2dengine/general/p2dmath.h>
+#include "../general/p2dmath.h"
+//#include "p2dengine/general/p2dmath.h"
 //#include <Collision.h>
 
 /// This holds the mass data computed for a shape.
@@ -20,10 +21,10 @@ struct P2DMass
 
 enum Type
 {
-    Circle = 0,
-    Edge = 1,
-    Polygon = 2,
-    Chain = 3,
+    CircleType = 0,
+    EdgeType = 1,
+    PolygonType = 2,
+    ChainType = 3,
     TypeCount = 4
 };
 

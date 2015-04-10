@@ -10,6 +10,11 @@ SceneManager::SceneManager()
     addItem(item);
 
     tmp=0;
+//    QVector<QPointF> ps;
+//    ps.push_back(QPointF(0, 0));
+//    ps.push_back(QPointF(1, 1));
+//    ps.push_back(QPointF(0, 1));
+//    polyItem = new PolygonItem(color,ps );
 }
 
 
@@ -28,7 +33,7 @@ void SceneManager::mousePressEvent(QGraphicsSceneMouseEvent *event)
     // We can only draw in a blank area.
     if(event->button() == Qt::LeftButton && itemAt(event->scenePos(), QTransform()) == nullptr){
         isDrawing = true;
-        drawingItem = new DrawingPolygon(QColor(qrand()%255, qrand()%255, qrand()%255), event->scenePos());
+        drawingItem = new DrawingPolygonItem(QColor(qrand()%255, qrand()%255, qrand()%255), event->scenePos());
         addItem(drawingItem);
     }
 
@@ -40,7 +45,6 @@ void SceneManager::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     if(isDrawing){
         drawingItem->AddPoint(event->scenePos());
-        //update();
     }
 
     QGraphicsScene::mouseMoveEvent(event);
@@ -50,10 +54,15 @@ void SceneManager::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void SceneManager::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if(isDrawing){
+        // TODO add to the object tree
+        polyItem = new PolygonItem(drawingItem->GetColor(), drawingItem->GetPoints());
+        //polyItem->setPos(event->scenePos());
+        item->setPos(QPointF(0, 0));
+        addItem(polyItem);
+
         isDrawing = false;
         removeItem(drawingItem);
 
-        // TODO add to the object tree
     }
 
     QGraphicsScene::mouseReleaseEvent(event);
@@ -62,7 +71,7 @@ void SceneManager::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 
 
-DrawingPolygonItem::DrawingPolygon(QColor color, QPointF p)
+DrawingPolygonItem::DrawingPolygonItem(QColor color, QPointF p)
 {
     points.push_back(p);
     color.setAlpha(49);

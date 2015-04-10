@@ -1,9 +1,10 @@
-#include <p2dengine/objects/p2dpolygonobject.h>
+#include "p2dpolygonobject.h"
+//#include "p2dengine/objects/p2dpolygonobject.h"
 #include <new>
 
-inline P2DPolygonObject::P2DPolygonObject()
+ P2DPolygonObject::P2DPolygonObject()
 {
-    m_type = Polygon;
+    m_type = PolygonType;
     m_radius = P2D_POLYGON_RADIUS;
     m_count = 0;
     m_centroid.SetZero();
@@ -387,7 +388,7 @@ void P2DPolygonObject::ComputeMass(P2DMass* massData, float32 density) const
     massData->I += massData->mass * (P2DVecDot(massData->center, massData->center) - P2DVecDot(center, center));
 }
 
-inline const P2DVec2& P2DPolygonObject::GetVertex(int32 index) const
+const P2DVec2& P2DPolygonObject::GetVertex(int32 index) const
 {
     assert(0 <= index && index < m_count);
     return m_vertices[index];
