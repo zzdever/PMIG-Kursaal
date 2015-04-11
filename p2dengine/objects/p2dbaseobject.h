@@ -63,7 +63,7 @@ public:
 	/// @param aabb returns the axis aligned box.
 	/// @param xf the world transform of the shape.
 	/// @param childIndex the child shape
-    //virtual void ComputeAABB(b2AABB* aabb, const P2DTransform& xf, int32 childIndex) const = 0;
+    //virtual void ComputeAxisAlignedBoundingBox(P2DAABB* aabb, const P2DTransform& xf, int32 childIndex) const = 0;
 
 	/// Compute the mass properties of this shape using its dimensions and density.
 	/// The inertia tensor is computed about the local origin.

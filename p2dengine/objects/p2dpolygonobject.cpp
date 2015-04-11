@@ -285,17 +285,17 @@ bool P2DPolygonObject::RayCast(b2RayCastOutput* output, const b2RayCastInput& in
 }
 */
 
-/*
-void P2DPolygonObject::ComputeAABB(b2AABB* aabb, const P2DTransform& transform, int32 childIndex) const
+
+void P2DPolygonObject::ComputeAxisAlignedBoundingBox(P2DAABB *aabb, const P2DTransform& transform, int32 childIndex) const
 {
     NOT_USED(childIndex);
 
-    P2DVec2 lower = b2Mul(transform, m_vertices[0]);
+    P2DVec2 lower = P2DMul(transform, m_vertices[0]);
     P2DVec2 upper = lower;
 
 	for (int32 i = 1; i < m_count; ++i)
 	{
-        P2DVec2 v = b2Mul(transform, m_vertices[i]);
+        P2DVec2 v = P2DMul(transform, m_vertices[i]);
         lower = P2DMin(lower, v);
         upper = P2DMax(upper, v);
 	}
@@ -304,7 +304,7 @@ void P2DPolygonObject::ComputeAABB(b2AABB* aabb, const P2DTransform& transform, 
 	aabb->lowerBound = lower - r;
 	aabb->upperBound = upper + r;
 }
-*/
+
 
 void P2DPolygonObject::ComputeMass(P2DMass* massData, float32 density) const
 {

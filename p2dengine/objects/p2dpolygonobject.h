@@ -13,10 +13,10 @@ class P2DPolygonObject : public P2DBaseObject
 public:
     P2DPolygonObject();
 
-	/// Implement b2Shape.
+    /// Implement P2DBaseShape.
     //P2DBaseShape* Clone(b2BlockAllocator* allocator) const;
 
-	/// @see b2Shape::GetChildCount
+    /// @see P2DBaseShape::GetChildCount
 	int32 GetChildCount() const;
 
 	/// Create a convex hull from the given array of local points.
@@ -38,17 +38,17 @@ public:
 	/// @param angle the rotation of the box in local coordinates.
     void SetARect(float32 hx, float32 hy, const P2DVec2& center, float32 angle);
 
-	/// @see b2Shape::TestPoint
+    /// @see P2DBaseShape::TestPoint
     bool TestPoint(const P2DTransform& transform, const P2DVec2& p) const;
 
-	/// Implement b2Shape.
+    /// Implement P2DBaseShape.
 //	bool RayCast(b2RayCastOutput* output, const b2RayCastInput& input,
   //                  const P2DTransform& transform, int32 childIndex) const;
 
-	/// @see b2Shape::ComputeAABB
-//    void ComputeAABB(b2AABB* aabb, const P2DTransform &transform, int32 childIndex) const;
+    /// @see P2DBaseShape::ComputeAxisAlignedBoundingBox
+    void ComputeAxisAlignedBoundingBox(P2DAABB* aabb, const P2DTransform &transform, int32 childIndex) const;
 
-	/// @see b2Shape::ComputeMass
+    /// @see P2DBaseShape::ComputeMass
     void ComputeMass(P2DMass *massData, float32 density) const;
 
     /// Get the vertex count.
