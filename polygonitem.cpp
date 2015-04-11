@@ -82,7 +82,6 @@ void PolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
 void PolygonItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug()<<"pressed";
     QGraphicsItem::mousePressEvent(event);
     update();
 }

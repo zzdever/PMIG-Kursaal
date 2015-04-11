@@ -8,21 +8,12 @@ SceneManager::SceneManager()
     item = new Chip(color, 0, 0);
     item->setPos(QPointF(0, 0));
     addItem(item);
-
-    tmp=0;
-//    QVector<QPointF> ps;
-//    ps.push_back(QPointF(0, 0));
-//    ps.push_back(QPointF(1, 1));
-//    ps.push_back(QPointF(0, 1));
-//    polyItem = new PolygonItem(color,ps );
 }
 
 
 void SceneManager::Render()
 {
     // Physical engine solve here
-    //tmp++;
-    //item->setPos(QPointF(0, tmp%100));
     update();
 
     return;
@@ -53,12 +44,10 @@ void SceneManager::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void SceneManager::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug()<<event->scenePos();
     if(isDrawing){
         // TODO add to the object tree
         polyItem = new PolygonItem(drawingItem->GetColor(), drawingItem->GetPoints());
         //polyItem->setPos(event->scenePos());
-        item->setPos(QPointF(0, 0));
         addItem(polyItem);
 
         isDrawing = false;
@@ -91,6 +80,10 @@ DrawingPolygonItem::DrawingPolygonItem(QColor color, QPointF p)
 void DrawingPolygonItem::AddPoint(QPointF p)
 {
     int size = points.size();
+    // we do not allow the second point is too close to the first one
+    if(size==1 && QVector2D(p - points.at(size - 1)).length()<FLT_EPSILON)
+        return;
+
     bool pop = false;
     if(size >= 2){
         // the last vector
@@ -100,7 +93,7 @@ void DrawingPolygonItem::AddPoint(QPointF p)
 
         qreal crossProduct = v0.x()*v1.y() - v1.x()*v0.y();
         qreal sinV = crossProduct/(v0.length()*v1.length());
-        if(sinV < sin(0.05) || v1.length()<FLT_EPSILON)
+        if(qAbs(sinV) < sin(0.05)/*in radian*/ || v1.length()<FLT_EPSILON)
             pop = true;
     }
 
@@ -140,7 +133,6 @@ void DrawingPolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
         path.moveTo((points.first()));
         for (int i = 1; i < points.size(); ++i){
             path.lineTo((points.at(i)));
-            painter->drawPoint(points.at(i));
         }
         painter->drawPath(path);
         painter->setPen(p);

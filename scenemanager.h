@@ -23,8 +23,6 @@ private:
     DrawingPolygonItem *drawingItem;
     PolygonItem *polyItem;
 
-    int tmp;
-
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
