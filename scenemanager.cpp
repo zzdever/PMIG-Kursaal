@@ -138,8 +138,10 @@ void DrawingPolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
         QPainterPath path;
         path.moveTo((points.first()));
-        for (int i = 1; i < points.size(); ++i)
+        for (int i = 1; i < points.size(); ++i){
             path.lineTo((points.at(i)));
+            painter->drawPoint(points.at(i));
+        }
         painter->drawPath(path);
         painter->setPen(p);
         painter->setBrush(b);
