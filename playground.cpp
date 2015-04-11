@@ -143,11 +143,14 @@ void PlayGround::resetView()
 
 void PlayGround::setupMatrix()
 {
+    qreal old=zoomAmount;
     if(qAbs(toZoomAmount) < 0.02*ZOOM_PARAM)
         toZoomAmount = 0;
     zoomAmount += toZoomAmount;
     qreal scale = qPow(qreal(2), zoomAmount);
     toZoomAmount = toZoomAmount * ZOOM_PARAM;
+if(abs(old-zoomAmount)>FLT_EPSILON)
+qDebug()<<zoomAmount;
 
     if(!isDragging){
         if(toTranslation.manhattanLength() < 1)
@@ -163,6 +166,9 @@ void PlayGround::setupMatrix()
     matrix.scale(scale, scale);
 
     setMatrix(matrix);
+
+    if(zoomAmount<-4.5) zoomAmount = -4.5;
+    if(zoomAmount>2.0) zoomAmount = 2.0;
 }
 
 
@@ -306,6 +312,8 @@ void Chip::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
         painter->drawPath(path);
         painter->setPen(p);
     }
+
+    painter->drawRect(QRect(-10000*0.9,-10000*0.9,20000*0.9,20000*0.9));
 }
 
 void Chip::mousePressEvent(QGraphicsSceneMouseEvent *event)

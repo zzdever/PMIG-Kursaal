@@ -53,6 +53,7 @@ void SceneManager::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void SceneManager::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    qDebug()<<event->scenePos();
     if(isDrawing){
         // TODO add to the object tree
         polyItem = new PolygonItem(drawingItem->GetColor(), drawingItem->GetPoints());
