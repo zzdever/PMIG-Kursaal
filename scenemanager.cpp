@@ -76,7 +76,7 @@ DrawingPolygonItem::DrawingPolygonItem(QColor color, QPointF p)
 {
     points.push_back(p);
     minx = p.x();
-    maxx = p.y();
+    maxx = p.x();
     miny = p.y();
     maxy = p.y();
     color.setAlpha(49);

@@ -32,8 +32,6 @@ PolygonItem::PolygonItem(QColor color, QVector<QPointF> points)
     transform->SetIdentity();
     aabb = new P2DAABB();
     p2DPolygonObject->ComputeAxisAlignedBoundingBox(aabb, *transform);
-    if(aabb)
-    qDebug()<<aabb->lowerBound.x<<aabb->lowerBound.y<<","<<aabb->upperBound.x<<aabb->upperBound.y;
 }
 
 PolygonItem::~PolygonItem()
@@ -43,7 +41,11 @@ PolygonItem::~PolygonItem()
 
 QRectF PolygonItem::boundingRect() const
 {
-    return QRectF(0, 0, 200, 200);
+    int minx = aabb->lowerBound.x;
+    int miny = aabb->lowerBound.y;
+    int maxx = aabb->upperBound.x;
+    int maxy = aabb->upperBound.y;
+    return QRectF(minx, miny, maxx-minx, maxy-miny);
 }
 
 QPainterPath PolygonItem::shape() const
@@ -58,13 +60,13 @@ void PolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
     int count = p2DPolygonObject->GetVertexCount();
 
-    QColor c = (option->state & QStyle::State_MouseOver) ? Qt::black : this->color;
+    QColor c = (option->state & QStyle::State_MouseOver) ? this->color.light() : this->color;
 
     if (count > 1) {
         QPen p = painter->pen();
         QBrush b = painter->brush();
 
-        QPen pnew(QPen(c, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        QPen pnew(QPen(c, 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         //pnew.setCosmetic(true);
         painter->setPen(pnew);
         QBrush bnew(QBrush(c, Qt::SolidPattern));
@@ -74,6 +76,8 @@ void PolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         painter->setPen(p);
         painter->setBrush(b);
     }
+
+    painter->drawRect(boundingRect());
 }
 
 void PolygonItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
