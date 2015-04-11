@@ -23,6 +23,8 @@ protected:
 
 private:
     P2DPolygonObject *p2DPolygonObject;
+    P2DTransform *transform;
+    P2DAABB *aabb;
 
     int x;
     int y;

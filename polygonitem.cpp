@@ -5,6 +5,13 @@
 
 PolygonItem::PolygonItem(QColor color, QVector<QPointF> points)
 {
+    this->color = color;
+    setZValue(0);
+
+    setFlags(ItemIsSelectable | ItemIsMovable);
+    setAcceptHoverEvents(true);
+
+
     qDebug()<<"input size"<<points.size();
     p2DPolygonObject = new P2DPolygonObject;
     P2DVec2 pts[P2D_MAX_POLYGON_VERTICES];
@@ -21,11 +28,12 @@ PolygonItem::PolygonItem(QColor color, QVector<QPointF> points)
         path.lineTo(QPointF(p2DPolygonObject->GetVertex(i).x,
                             p2DPolygonObject->GetVertex(i).y));
 
-    this->color = color;
-    setZValue(0);
-
-    setFlags(ItemIsSelectable | ItemIsMovable);
-    setAcceptHoverEvents(true);
+    transform = new P2DTransform();
+    transform->SetIdentity();
+    aabb = new P2DAABB();
+    p2DPolygonObject->ComputeAxisAlignedBoundingBox(aabb, *transform);
+    if(aabb)
+    qDebug()<<aabb->lowerBound.x<<aabb->lowerBound.y<<","<<aabb->upperBound.x<<aabb->upperBound.y;
 }
 
 PolygonItem::~PolygonItem()

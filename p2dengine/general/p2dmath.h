@@ -51,7 +51,7 @@ struct P2DVec2
     /// Negate this vector.
     P2DVec2 operator -() const { P2DVec2 v; v.Set(-x, -y); return v; }
 
-    /*
+
     /// Read from and indexed element.
     float32 operator () (int32 i) const
     {
@@ -63,7 +63,7 @@ struct P2DVec2
     {
         return (&x)[i];
     }
-    */
+
 
     /// Add a vector to this vector.
     void operator += (const P2DVec2& v)

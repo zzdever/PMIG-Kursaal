@@ -3,6 +3,7 @@
 
 #include "p2dbaseobject.h"
 //#include "p2dengine/objects/p2dbaseobject.h"
+#include  "../collision/p2dcollision.h"
 
 /// A convex polygon. It is assumed that the interior of the polygon is to
 /// the left of each edge.
@@ -46,7 +47,7 @@ public:
   //                  const P2DTransform& transform, int32 childIndex) const;
 
     /// @see P2DBaseShape::ComputeAxisAlignedBoundingBox
-    void ComputeAxisAlignedBoundingBox(P2DAABB* aabb, const P2DTransform &transform, int32 childIndex) const;
+    void ComputeAxisAlignedBoundingBox(P2DAABB* aabb, const P2DTransform &transform, int32 childIndex=0) const;
 
     /// @see P2DBaseShape::ComputeMass
     void ComputeMass(P2DMass *massData, float32 density) const;
