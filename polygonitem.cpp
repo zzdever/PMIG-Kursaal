@@ -60,7 +60,7 @@ void PolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
     int count = p2DPolygonObject->GetVertexCount();
 
-    QColor c = (option->state & QStyle::State_MouseOver) ? this->color.light() : this->color;
+    QColor c = (option->state & QStyle::State_MouseOver) ? QColor(color.red(),color.green(),color.blue(),70) : this->color;
 
     if (count > 1) {
         QPen p = painter->pen();
@@ -88,6 +88,7 @@ void PolygonItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void PolygonItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+    qDebug()<<this->sceneTransform();
     QGraphicsItem::mouseMoveEvent(event);
     update();
 }
@@ -96,4 +97,21 @@ void PolygonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     QGraphicsItem::mouseReleaseEvent(event);
     update();
+}
+
+void PolygonItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    QMenu menu;
+    QAction *changeColorAction = menu.addAction("Change Color");
+    menu.addSeparator();
+    QAction *liquifyAction = menu.addAction("Liquify");
+
+    QAction *selectedAction = menu.exec(event->screenPos());
+    if(selectedAction == changeColorAction){
+        QColorDialog cDialog;
+        cDialog.exec();
+        this->color = cDialog.selectedColor();
+    } else if(selectedAction == liquifyAction){
+        qDebug()<<"liquify";
+    }
 }
