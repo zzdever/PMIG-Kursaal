@@ -35,7 +35,7 @@ PolygonItem::~PolygonItem()
 
 QRectF PolygonItem::boundingRect() const
 {
-    return QRectF(0, 0, 110, 70);
+    return QRectF(0, 0, 200, 200);
 }
 
 QPainterPath PolygonItem::shape() const

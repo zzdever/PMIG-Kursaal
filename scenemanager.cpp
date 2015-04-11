@@ -74,6 +74,10 @@ void SceneManager::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 DrawingPolygonItem::DrawingPolygonItem(QColor color, QPointF p)
 {
     points.push_back(p);
+    minx = p.x();
+    maxx = p.y();
+    miny = p.y();
+    maxy = p.y();
     color.setAlpha(49);
     this->color = color;
 
@@ -85,12 +89,33 @@ DrawingPolygonItem::DrawingPolygonItem(QColor color, QPointF p)
 
 void DrawingPolygonItem::AddPoint(QPointF p)
 {
+    int size = points.size();
+    bool pop = false;
+    if(size >= 2){
+        // the last vector
+        QVector2D v0 = QVector2D(points.at(size - 1) - points.at(size - 2));
+        // the current vector
+        QVector2D v1 = QVector2D(p - points.at(size - 1));
+
+        qreal crossProduct = v0.x()*v1.y() - v1.x()*v0.y();
+        qreal sinV = crossProduct/(v0.length()*v1.length());
+        if(sinV < sin(0.05) || v1.length()<FLT_EPSILON)
+            pop = true;
+    }
+
+    if(pop)
+        points.pop_back();
+
     points.push_back(p);
+    if(p.x()<minx) minx = p.x();
+    if(p.x()>maxx) maxx = p.x();
+    if(p.y()<miny) miny = p.y();
+    if(p.y()>maxy) maxy = p.y();
 }
 
 QRectF DrawingPolygonItem::boundingRect() const
 {
-    return QRectF(0, 0, 100, 100);
+    return QRectF(minx, miny, maxx-minx, maxy-miny);
 }
 
 void DrawingPolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -118,6 +143,8 @@ void DrawingPolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
         painter->setPen(p);
         painter->setBrush(b);
     }
+
+    painter->drawRect(QRectF(minx, miny, maxx-minx, maxy-miny));
 }
 
 

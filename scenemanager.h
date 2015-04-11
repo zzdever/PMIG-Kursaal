@@ -60,6 +60,8 @@ public:
 private:
     QColor color;
     QVector<QPointF> points;
+
+    qreal minx, maxx, miny, maxy;
 };
 
 
