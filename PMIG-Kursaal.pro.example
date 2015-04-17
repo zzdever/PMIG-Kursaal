@@ -21,21 +21,29 @@ SOURCES += main.cpp\
     panels.cpp \
     shared/hoverpoints.cpp \
     toolbox.cpp \
-    2DEngine/Shapes/P2DPolygonShape.cpp \
-    2DEngine/General/P2DMath.cpp \
-    2DEngine/General/P2DParams.cpp \
-    playground.cpp
+    playground.cpp \
+    scenemanager.cpp \
+    p2dengine/objects/p2dpolygonobject.cpp \
+    polygonitem.cpp \
+    utils.cpp \
+    p2dengine/general/p2dmath.cpp \
+    p2dengine/collision/p2dcollision.cpp
 
 HEADERS  += mainwindow.h \
     scribblearea.h \
     panels.h \
     shared/hoverpoints.h \
     toolbox.h \
-    2DEngine/Shapes/P2DBaseShape.h \
-    2DEngine/Shapes/P2DPolygonShape.h \
-    2DEngine/General/P2DMath.h \
-    2DEngine/General/P2DParams.h \
-    playground.h
+    playground.h \
+    scenemanager.h \
+    p2dengine/general/p2dmath.h \
+    p2dengine/general/p2dmathgeneral.h \
+    p2dengine/general/p2dparams.h \
+    p2dengine/objects/p2dbaseobject.h \
+    polygonitem.h \
+    utils.h \
+    p2dengine/objects/p2dpolygonobject.h \
+    p2dengine/collision/p2dcollision.h
 
 FORMS    += mainwindow.ui
 
@@ -45,10 +53,12 @@ RESOURCES += \
 
 
 
-INCLUDEPATH += /usr/local/include/opencv/
-INCLUDEPATH += /usr/local/include/
+INCLUDEPATH += C:\opencv-2.4.10\build\include\opencv
+INCLUDEPATH += C:\opencv-2.4.10\build\include
 
 
-LIBS += /usr/local/lib/libopencv_core.dylib\
-        /usr/local/lib/libopencv_highgui.dylib\
-        /usr/local/lib/libopencv_imgproc.dylib
+LIBS += C:\opencv-2.4.10\build\x64\vc12\lib\opencv_core2410.lib\
+        C:\opencv-2.4.10\build\x64\vc12\lib\opencv_highgui2410.lib\
+        C:\opencv-2.4.10\build\x64\vc12\lib\opencv_imgproc2410.lib
+        #/usr/local/lib/libopencv_highgui.dylib\
+        #/usr/local/lib/libopencv_imgproc.dylib
