@@ -1,5 +1,5 @@
 #include "p2dcollision.h"
-//#include <Box2D/Collision/b2Distance.h>
+//#include <Distance.h>
 
 /*
 void b2WorldManifold::Initialize(const b2Manifold* manifold,
