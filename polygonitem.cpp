@@ -37,6 +37,8 @@ PolygonItem::PolygonItem(QColor color, QVector<QPointF> points)
 PolygonItem::~PolygonItem()
 {
     delete p2DPolygonObject;
+    delete transform;
+    delete aabb;
 }
 
 QRectF PolygonItem::boundingRect() const
