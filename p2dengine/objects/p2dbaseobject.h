@@ -19,14 +19,7 @@ struct P2DMass
     float32 I;
 };
 
-enum Type
-{
-    CircleType = 0,
-    EdgeType = 1,
-    PolygonType = 2,
-    ChainType = 3,
-    TypeCount = 4
-};
+
 
 /// A shape is used for collision detection. You can create a shape however you like.
 /// Shapes used for simulation in b2World are created automatically when a b2Fixture
@@ -34,6 +27,15 @@ enum Type
 class P2DBaseObject
 {
 public:
+	enum Type
+	{
+	    CircleType = 0,
+	    EdgeType = 1,
+	    PolygonType = 2,
+	    ChainType = 3,
+	    TypeCount = 4
+	};
+	
     virtual ~P2DBaseObject() {}
 
 	/// Clone the concrete shape using the provided allocator.

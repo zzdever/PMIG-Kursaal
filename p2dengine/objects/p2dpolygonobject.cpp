@@ -211,15 +211,15 @@ bool P2DPolygonObject::TestPoint(const P2DTransform& transform, const P2DVec2& p
 	return true;
 }
 
-/*
-bool P2DPolygonObject::RayCast(b2RayCastOutput* output, const b2RayCastInput& input,
-								const b2Transform& xf, int32 childIndex) const
+
+bool P2DPolygonObject::RayCast(P2DRayCastOutput* output, const P2DRayCastInput& input,
+                                const P2DTransform& xf, int32 childIndex) const
 {
     NOT_USED(childIndex);
 
 	// Put the ray into the polygon's frame of reference.
-    P2DVec2 p1 = b2MulT(xf.q, input.p1 - xf.p);
-    P2DVec2 p2 = b2MulT(xf.q, input.p2 - xf.p);
+    P2DVec2 p1 = P2DMulT(xf.rotation, input.p1 - xf.position);
+    P2DVec2 p2 = P2DMulT(xf.rotation, input.p2 - xf.position);
     P2DVec2 d = p2 - p1;
 
 	float32 lower = 0.0f, upper = input.maxFraction;
@@ -231,8 +231,8 @@ bool P2DPolygonObject::RayCast(b2RayCastOutput* output, const b2RayCastInput& in
 		// p = p1 + a * d
 		// dot(normal, p - v) = 0
 		// dot(normal, p1 - v) + a * dot(normal, d) = 0
-		float32 numerator = b2Dot(m_normals[i], m_vertices[i] - p1);
-		float32 denominator = b2Dot(m_normals[i], d);
+        float32 numerator = P2DVecDot(m_normals[i], m_vertices[i] - p1);
+        float32 denominator = P2DVecDot(m_normals[i], d);
 
 		if (denominator == 0.0f)
 		{	
@@ -272,18 +272,18 @@ bool P2DPolygonObject::RayCast(b2RayCastOutput* output, const b2RayCastInput& in
 		}
 	}
 
-	b2Assert(0.0f <= lower && lower <= input.maxFraction);
+    assert(0.0f <= lower && lower <= input.maxFraction);
 
 	if (index >= 0)
 	{
 		output->fraction = lower;
-		output->normal = b2Mul(xf.q, m_normals[index]);
+        output->normal = P2DMul(xf.rotation, m_normals[index]);
 		return true;
 	}
 
 	return false;
 }
-*/
+
 
 
 void P2DPolygonObject::ComputeAxisAlignedBoundingBox(P2DAABB *aabb, const P2DTransform& transform, int32 childIndex) const

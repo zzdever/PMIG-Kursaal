@@ -16,6 +16,10 @@
 
 // Collision
 
+/// The maximum number of contact points between two convex shapes. Do
+/// not change this value.
+#define P2D_MAX_MANIFOLD_POINTS 2
+
 /// The maximum number of contact points between two convex shapes.
 #define P2D_MAX_CONTACT_POINTS 2
 
@@ -38,6 +42,14 @@
 /// Maximum number of sub-steps per contact in continuous physics simulation.
 #define P2D_MAX_SUB_STEPS 8
 
+/// This is used to fatten AABBs in the dynamic b-tree. This allows proxies
+/// to move by a small amount without triggering a tree adjustment.
+#define P2D_AABB_EXTENSION 0.1f
+
+/// This is used to fatten AABBs in the dynamic b-tree. This is used to predict
+/// the future position based on the current displacement.
+/// This is a dimensionless multiplier.
+#define P2D_AABB_MULTIPLIER 2.0f
 
 
 typedef unsigned char uint8;

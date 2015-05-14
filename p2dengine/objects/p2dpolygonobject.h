@@ -43,8 +43,8 @@ public:
     bool TestPoint(const P2DTransform& transform, const P2DVec2& p) const;
 
     /// Implement P2DBaseShape.
-//	bool RayCast(b2RayCastOutput* output, const b2RayCastInput& input,
-  //                  const P2DTransform& transform, int32 childIndex) const;
+    bool RayCast(P2DRayCastOutput* output, const P2DRayCastInput& input,
+                    const P2DTransform& transform, int32 childIndex) const;
 
     /// @see P2DBaseShape::ComputeAxisAlignedBoundingBox
     void ComputeAxisAlignedBoundingBox(P2DAABB* aabb, const P2DTransform &transform, int32 childIndex=0) const;
@@ -62,7 +62,7 @@ public:
 	/// @returns true if valid
     bool ValidateConvexity() const;
 
-private:
+
     P2DVec2 m_centroid;
     P2DVec2 m_vertices[P2D_MAX_POLYGON_VERTICES];
     P2DVec2 m_normals[P2D_MAX_POLYGON_VERTICES];
