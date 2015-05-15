@@ -24,10 +24,25 @@ SOURCES += main.cpp\
     playground.cpp \
     scenemanager.cpp \
     p2dengine/objects/p2dpolygonobject.cpp \
-    polygonitem.cpp \
-    utils.cpp \
     p2dengine/general/p2dmath.cpp \
-    p2dengine/collision/p2dcollision.cpp
+    polygonitem.cpp \
+    p2dengine/collision/p2dcollision.cpp \
+    p2dengine/general/p2dtimer.cpp \
+    p2dengine/general/p2dmem.cpp \
+    p2dengine/collision/p2ddistance.cpp \
+    p2dengine/collision/p2dcontactsolver.cpp \
+    p2dengine/collision/p2dcontact.cpp \
+    p2dengine/collision/p2dtoi.cpp \
+    p2dengine/collision/p2dcoarsecollision.cpp \
+    p2dengine/collision/p2dbtree.cpp \
+    p2dengine/scene/p2dbody.cpp \
+    p2dengine/scene/p2dfixture.cpp \
+    p2dengine/scene/p2dscenecallback.cpp \
+    p2dengine/scene/p2dcontactmanager.cpp \
+    p2dengine/scene/p2dscenemanager.cpp \
+    p2dengine/collision/p2dpolygoncontact.cpp \
+    p2dengine/scene/p2disland.cpp \
+    p2dengine/collision/p2dcollidepolygon.cpp
 
 HEADERS  += mainwindow.h \
     scribblearea.h \
@@ -37,13 +52,27 @@ HEADERS  += mainwindow.h \
     playground.h \
     scenemanager.h \
     p2dengine/general/p2dmath.h \
-    p2dengine/general/p2dmathgeneral.h \
     p2dengine/general/p2dparams.h \
+    p2dengine/objects/p2dpolygonobject.h \
     p2dengine/objects/p2dbaseobject.h \
     polygonitem.h \
-    utils.h \
-    p2dengine/objects/p2dpolygonobject.h \
-    p2dengine/collision/p2dcollision.h
+    p2dengine/collision/p2dcollision.h \
+    p2dengine/collision/p2ddistance.h \
+    p2dengine/general/p2dtimer.h \
+    p2dengine/general/p2dmem.h \
+    p2dengine/collision/p2dcontactsolver.h \
+    p2dengine/collision/p2dcontact.h \
+    p2dengine/collision/p2dtoi.h \
+    p2dengine/collision/p2dcoarsecollision.h \
+    p2dengine/collision/p2dbtree.h \
+    p2dengine/general/p2dcommonstructs.h \
+    p2dengine/scene/p2dfixture.h \
+    p2dengine/scene/p2dscenecallback.h \
+    p2dengine/scene/p2dscenemanager.h \
+    p2dengine/scene/p2dbody.h \
+    p2dengine/scene/p2dcontactmanager.h \
+    p2dengine/collision/p2dpolygoncontact.h \
+    p2dengine/scene/p2disland.h
 
 FORMS    += mainwindow.ui
 
@@ -53,12 +82,12 @@ RESOURCES += \
 
 
 
-INCLUDEPATH += C:\opencv-2.4.10\build\include\opencv
-INCLUDEPATH += C:\opencv-2.4.10\build\include
+INCLUDEPATH += /usr/local/include/opencv/
+INCLUDEPATH += /usr/local/include/
 
 
-LIBS += C:\opencv-2.4.10\build\x64\vc12\lib\opencv_core2410.lib\
-        C:\opencv-2.4.10\build\x64\vc12\lib\opencv_highgui2410.lib\
-        C:\opencv-2.4.10\build\x64\vc12\lib\opencv_imgproc2410.lib
-        #/usr/local/lib/libopencv_highgui.dylib\
-        #/usr/local/lib/libopencv_imgproc.dylib
+LIBS += /usr/local/lib/libopencv_core.dylib\
+        /usr/local/lib/libopencv_highgui.dylib\
+        /usr/local/lib/libopencv_imgproc.dylib
+
+OTHER_FILES +=
