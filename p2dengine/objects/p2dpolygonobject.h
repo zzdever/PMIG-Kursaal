@@ -4,6 +4,7 @@
 #include "p2dbaseobject.h"
 #include  "../collision/p2dcollision.h"
 
+
 /// A convex polygon. It is assumed that the interior of the polygon is to
 /// the left of each edge.
 /// Polygons have a maximum number of vertices equal to P2D_MAX_POLYGON_VERTICES.

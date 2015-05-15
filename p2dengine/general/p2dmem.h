@@ -3,6 +3,7 @@
 
 #include "p2dparams.h"
 #include <memory.h>
+#include <stdlib.h>
 
 const int32 STACK_SIZE = 100 * 1024;
 const int32 MAX_STACK_ENTRIES = 32;

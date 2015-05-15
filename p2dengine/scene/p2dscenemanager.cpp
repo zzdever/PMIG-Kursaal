@@ -918,12 +918,12 @@ void P2DScene::Step(float32 dt, int32 velocityIterations, int32 positionIteratio
 	step.dtRatio = m_inv_dt0 * dt;
 
 	step.warmStarting = m_warmStarting;
-	
+
 	// Update contacts. This is where some contacts are destroyed.
 	{
         P2DTimer timer;
-		m_contactManager.Collide();
-		m_profile.collide = timer.GetMilliseconds();
+        m_contactManager.Collide();
+        m_profile.collide = timer.GetMilliseconds();
 	}
 
 	// Integrate velocities, solve velocity constraints, and integrate positions.

@@ -8,16 +8,112 @@ SceneManager::SceneManager()
     item = new Chip(color, 0, 0);
     item->setPos(QPointF(0, 0));
     addItem(item);
+
+    InitP2DEngine();
+}
+
+SceneManager::~SceneManager()
+{
+    if(item) delete item;
+    if(drawingItem) delete drawingItem;
+    if(polyItem) delete polyItem;
+    if(scene) delete scene;
 }
 
 
 void SceneManager::Render()
 {
-    // Physical engine solve here
+    // Instruct the scene to perform a single step of simulation.
+    // It is generally best to keep the time step and iterations fixed.
+    scene->Step(timeStep, velocityIterations, positionIterations);
+
+    // Now print the position and angle of the body.
+    P2DVec2 position = body->GetPosition();
+    float32 angle = body->GetAngle();
+
+    //int bodyCount = scene->GetBodyCount();
+
+    for(P2DBody* bodyList = scene->GetBodyList();
+        bodyList; bodyList = bodyList->GetNext())
+    {
+        const P2DTransform& xf = bodyList->GetTransform();
+
+        for(P2DFixture* fixture = bodyList->GetFixtureList();
+            fixture; fixture = fixture->GetNext())
+        {
+            P2DPolygonObject* poly = (P2DPolygonObject*)fixture->GetShape();
+            int vertexCount = poly->m_count;
+            assert(vertexCount <= P2D_MAX_POLYGON_VERTICES);
+            P2DVec2 vertices[P2D_MAX_POLYGON_VERTICES];
+            for (int i = 0; i < vertexCount; ++i){
+                vertices[i] = P2DMul(xf, poly->m_vertices[i]);
+            }
+            //DrawSolidPolygon(vertices, vertexCount, color);
+        }
+    }
+
+    //qDebug()<<position.x<<position.y<<angle;
+    //printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
+
+    // Refresh the viewport
     update();
 
     return;
 }
+
+void SceneManager::InitP2DEngine()
+{
+    // Define the gravity vector.
+    P2DVec2 gravity(0.0f, -10.0f);
+    // Construct a world object, which will hold and simulate the rigid bodies.
+    scene = new P2DScene(gravity);
+
+    // Define the ground body.
+    P2DBodyDef groundBodyDef;
+    groundBodyDef.position.Set(0.0f, -10.0f);
+    // Call the body factory which allocates memory for the ground body
+    // from a pool and creates the ground box shape (also from a pool).
+    // The body is also added to the world.
+    P2DBody* groundBody = scene->CreateBody(&groundBodyDef);
+
+    // Define the ground box shape.
+    P2DPolygonObject groundBox;
+    groundBox.SetARect(50.0f, 10.0f);
+
+    // Add the ground fixture to the ground body.
+    groundBody->CreateFixture(&groundBox, 0.0f);
+
+    // Define the dynamic body. We set its position and call the body factory.
+    P2DBodyDef bodyDef;
+    bodyDef.type = P2D_DYNAMIC_BODY;
+    bodyDef.position.Set(0.0f, 4.0f);
+    body = scene->CreateBody(&bodyDef);
+
+    // Define another box shape for our dynamic body.
+    P2DPolygonObject dynamicBox;
+    dynamicBox.SetARect(1.0f, 1.0f);
+
+    // Define the dynamic body fixture.
+    P2DFixtureDef fixtureDef;
+    fixtureDef.shape = &dynamicBox;
+    // Set the box density to be non-zero, so it will be dynamic.
+    fixtureDef.density = 1.0f;
+    // Override the default friction.
+    fixtureDef.friction = 0.3f;
+
+    // Add the shape to the body.
+    body->CreateFixture(&fixtureDef);
+
+
+    // Prepare for simulation. Typically we use a time step of 1/60 of a
+    // second (60Hz) and 10 iterations. This provides a high quality simulation
+    // in most game scenarios.
+    timeStep = 1.0f / 60.0f;
+    velocityIterations = 6;
+    positionIterations = 2;
+
+}
+
 
 void SceneManager::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -46,7 +142,8 @@ void SceneManager::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if(isDrawing){
         // TODO add to the object tree
-        polyItem = new PolygonItem(drawingItem->GetColor(), drawingItem->GetPoints());
+        polyItem = new PolygonItem(drawingItem->GetColor());
+        polyItem->BindP2DBody(scene, drawingItem->GetPoints());
         //polyItem->setPos(event->scenePos());
         addItem(polyItem);
 

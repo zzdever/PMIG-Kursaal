@@ -6,6 +6,7 @@
 #include "p2dcontactmanager.h"
 #include "p2dscenecallback.h"
 #include "../general/p2dcommonstructs.h"
+#include "p2dfixture.h"
 
 struct P2DAABB;
 struct P2DBodyDef;
@@ -13,7 +14,7 @@ struct P2DBodyDef;
 //struct P2DJointDef;
 class P2DBody;
 //class P2DDraw;
-//class P2DFixture;
+class P2DFixture;
 //class P2DJoint;
 
 /// The world class manages all physics entities, dynamic simulation,

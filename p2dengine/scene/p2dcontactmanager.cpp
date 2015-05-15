@@ -87,16 +87,16 @@ void P2DContactManager::Destroy(P2DContact* c)
 void P2DContactManager::Collide()
 {
 	// Update awake contacts.
-	P2DContact* c = m_contactList;
+    P2DContact* c = m_contactList;
 	while (c)
 	{
-		P2DFixture* fixtureA = c->GetFixtureA();
-		P2DFixture* fixtureB = c->GetFixtureB();
-		int32 indexA = c->GetChildIndexA();
-		int32 indexB = c->GetChildIndexB();
-		P2DBody* bodyA = fixtureA->GetBody();
-		P2DBody* bodyB = fixtureB->GetBody();
-		 
+        P2DFixture* fixtureA = c->GetFixtureA();
+        P2DFixture* fixtureB = c->GetFixtureB();
+        int32 indexA = c->GetChildIndexA();
+        int32 indexB = c->GetChildIndexB();
+        P2DBody* bodyA = fixtureA->GetBody();
+        P2DBody* bodyB = fixtureB->GetBody();
+
 		// Is this contact flagged for filtering?
 		if (c->m_flags & P2DContact::e_filterFlag)
 		{

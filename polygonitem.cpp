@@ -3,7 +3,7 @@
 #include <QtWidgets>
 #include "p2dengine/general/p2dparams.h"
 
-PolygonItem::PolygonItem(QColor color, QVector<QPointF> points)
+PolygonItem::PolygonItem(QColor color)
 {
     this->color = color;
     setZValue(0);
@@ -11,7 +11,7 @@ PolygonItem::PolygonItem(QColor color, QVector<QPointF> points)
     setFlags(ItemIsSelectable | ItemIsMovable);
     setAcceptHoverEvents(true);
 
-
+/*
     qDebug()<<"input size"<<points.size();
     p2DPolygonObject = new P2DPolygonObject;
     P2DVec2 pts[P2D_MAX_POLYGON_VERTICES];
@@ -32,13 +32,14 @@ PolygonItem::PolygonItem(QColor color, QVector<QPointF> points)
     transform->SetIdentity();
     aabb = new P2DAABB();
     p2DPolygonObject->ComputeAABB(aabb, *transform);
+*/
 }
 
 PolygonItem::~PolygonItem()
 {
-    delete p2DPolygonObject;
-    delete transform;
-    delete aabb;
+    // delete p2DPolygonObject;
+    // delete transform;
+    if(aabb) delete aabb;
 }
 
 QRectF PolygonItem::boundingRect() const
@@ -60,11 +61,14 @@ void PolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    int count = p2DPolygonObject->GetVertexCount();
+    //int count = p2DPolygonObject->GetVertexCount();
+    // TODO Do we need to check the count again?
+    // I think this is not necessary but not sure there is no problem.
 
     QColor c = (option->state & QStyle::State_MouseOver) ? QColor(color.red(),color.green(),color.blue(),70) : this->color;
 
-    if (count > 1) {
+    //if (count > 1) {
+    if (1) {
         QPen p = painter->pen();
         QBrush b = painter->brush();
 
@@ -80,6 +84,55 @@ void PolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     }
 
     painter->drawRect(boundingRect());
+}
+
+void PolygonItem::BindP2DBody(P2DScene* scene, QVector<QPointF> points)
+{
+    // Define the dynamic body. We set its position and call the body factory.
+    P2DBodyDef bodyDef;
+    bodyDef.type = P2D_DYNAMIC_BODY;
+    // TODO
+    bodyDef.position.Set(0.0f, 0.0f);
+    body = scene->CreateBody(&bodyDef);
+
+
+    // Define the polygon shape for our dynamic body.
+    P2DPolygonObject polygonObject;
+    P2DVec2 pts[P2D_MAX_POLYGON_VERTICES];
+    int32 count = points.size();
+qDebug()<<"input size"<<count;
+    for(int i=0; i<count; i++){
+        pts[i] = P2DVec2((float32)points.at(i).x(), (float32)points.at(i).y());
+    }
+    polygonObject.SetPoints(pts, count);
+    count = polygonObject.GetVertexCount();
+qDebug()<<"output size"<<count;
+
+    // Precompute the AABB
+    P2DTransform transform;
+    transform.SetIdentity();
+    aabb = new P2DAABB();
+    polygonObject.ComputeAABB(aabb, transform);
+
+    // Generate the path.
+    // Note this is in local coordinate, with origin at (0,0).
+    path.moveTo(QPointF(polygonObject.GetVertex(0).x,
+                        polygonObject.GetVertex(0).y));
+    for (int i = 1; i < count; ++i)
+        path.lineTo(QPointF(polygonObject.GetVertex(i).x,
+                            polygonObject.GetVertex(i).y));
+
+
+    // Define the dynamic body fixture.
+    P2DFixtureDef fixtureDef;
+    fixtureDef.shape = &polygonObject;
+    // Set the box density to be non-zero, so it will be dynamic.
+    fixtureDef.density = 1.0f;
+    // Override the default friction.
+    fixtureDef.friction = 0.3f;
+
+    // Add the shape to the body.
+    body->CreateFixture(&fixtureDef);
 }
 
 void PolygonItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
