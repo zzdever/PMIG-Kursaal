@@ -138,7 +138,7 @@ struct P2DRayCastInput
 };
 
 /// Ray-cast output data. The ray hits at p1 + fraction * (p2 - p1), where p1 and p2
-/// come from b2RayCastInput.
+/// come from P2DRayCastInput.
 struct P2DRayCastOutput
 {
     P2DVec2 normal;

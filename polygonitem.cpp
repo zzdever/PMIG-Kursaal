@@ -31,7 +31,7 @@ PolygonItem::PolygonItem(QColor color, QVector<QPointF> points)
     transform = new P2DTransform();
     transform->SetIdentity();
     aabb = new P2DAABB();
-    p2DPolygonObject->ComputeAxisAlignedBoundingBox(aabb, *transform);
+    p2DPolygonObject->ComputeAABB(aabb, *transform);
 }
 
 PolygonItem::~PolygonItem()

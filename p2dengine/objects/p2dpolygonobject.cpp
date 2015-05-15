@@ -1,5 +1,4 @@
 #include "p2dpolygonobject.h"
-//#include "p2dengine/objects/p2dpolygonobject.h"
 #include <new>
 
  P2DPolygonObject::P2DPolygonObject()
@@ -10,15 +9,15 @@
     m_centroid.SetZero();
 }
 
-/*
-b2Shape* P2DPolygonShape::Clone(b2BlockAllocator* allocator) const
+
+P2DBaseObject* P2DPolygonObject::Clone(P2DBlockMem* allocator) const
 {
-	void* mem = allocator->Allocate(sizeof(b2PolygonShape));
-	b2PolygonShape* clone = new (mem) b2PolygonShape;
+    void* mem = allocator->Allocate(sizeof(P2DPolygonObject));
+    P2DPolygonObject* clone = new (mem) P2DPolygonObject;
 	*clone = *this;
 	return clone;
 }
-*/
+
 
 void P2DPolygonObject::SetPoints(const P2DVec2* vertices, int32 count)
 {
@@ -265,7 +264,7 @@ bool P2DPolygonObject::RayCast(P2DRayCastOutput* output, const P2DRayCastInput& 
 		// The use of epsilon here causes the assert on lower to trip
 		// in some cases. Apparently the use of epsilon was to make edge
 		// shapes work, but now those are handled separately.
-		//if (upper < lower - b2_epsilon)
+        //if (upper < lower - FLT_EPSILON)
 		if (upper < lower)
 		{
 			return false;
@@ -286,7 +285,7 @@ bool P2DPolygonObject::RayCast(P2DRayCastOutput* output, const P2DRayCastInput& 
 
 
 
-void P2DPolygonObject::ComputeAxisAlignedBoundingBox(P2DAABB *aabb, const P2DTransform& transform, int32 childIndex) const
+void P2DPolygonObject::ComputeAABB(P2DAABB *aabb, const P2DTransform& transform, int32 childIndex) const
 {
     NOT_USED(childIndex);
 

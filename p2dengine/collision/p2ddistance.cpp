@@ -10,6 +10,7 @@ int32 p2d_gjkCalls, p2d_gjkIters, p2d_gjkMaxIters;
 
 void P2DDistanceProxy::Set(const P2DBaseObject* shape, int32 index)
 {
+    NOT_USED(index);
 	switch (shape->GetType())
 	{
 	/*

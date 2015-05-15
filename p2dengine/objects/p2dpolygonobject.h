@@ -2,26 +2,25 @@
 #define P2D_POLYGON_OBJECT_H
 
 #include "p2dbaseobject.h"
-//#include "p2dengine/objects/p2dbaseobject.h"
 #include  "../collision/p2dcollision.h"
 
 /// A convex polygon. It is assumed that the interior of the polygon is to
 /// the left of each edge.
-/// Polygons have a maximum number of vertices equal to b2_maxPolygonVertices.
+/// Polygons have a maximum number of vertices equal to P2D_MAX_POLYGON_VERTICES.
 /// In most cases you should not need many vertices for a convex polygon.
 class P2DPolygonObject : public P2DBaseObject
 {
 public:
     P2DPolygonObject();
 
-    /// Implement P2DBaseShape.
-    //P2DBaseShape* Clone(b2BlockAllocator* allocator) const;
+    /// Implement P2DBaseObject.
+    P2DBaseObject* Clone(P2DBlockMem* allocator) const;
 
     /// @see P2DBaseShape::GetChildCount
 	int32 GetChildCount() const;
 
 	/// Create a convex hull from the given array of local points.
-	/// The count must be in the range [3, b2_maxPolygonVertices].
+    /// The count must be in the range [3, P2D_MAX_POLYGON_VERTICES].
 	/// @warning the points may be re-ordered, even if they form a convex polygon
 	/// @warning collinear points are handled but not removed. Collinear points
 	/// may lead to poor stacking behavior.
@@ -46,8 +45,8 @@ public:
     bool RayCast(P2DRayCastOutput* output, const P2DRayCastInput& input,
                     const P2DTransform& transform, int32 childIndex) const;
 
-    /// @see P2DBaseShape::ComputeAxisAlignedBoundingBox
-    void ComputeAxisAlignedBoundingBox(P2DAABB* aabb, const P2DTransform &transform, int32 childIndex=0) const;
+    /// @see P2DBaseShape::ComputeAABB
+    void ComputeAABB(P2DAABB* aabb, const P2DTransform &transform, int32 childIndex=0) const;
 
     /// @see P2DBaseShape::ComputeMass
     void ComputeMass(P2DMass *massData, float32 density) const;

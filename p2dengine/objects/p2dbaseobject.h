@@ -1,10 +1,9 @@
 #ifndef P2D_BASE_OBJECT_H
 #define P2D_BASE_OBJECT_H
 
-//#include <BlockAllocator.h>
+#include "../general/p2dmem.h"
 #include "../general/p2dmath.h"
-//#include "p2dengine/general/p2dmath.h"
-//#include <Collision.h>
+#include "../collision/p2dcollision.h"
 
 /// This holds the mass data computed for a shape.
 struct P2DMass
@@ -22,7 +21,7 @@ struct P2DMass
 
 
 /// A shape is used for collision detection. You can create a shape however you like.
-/// Shapes used for simulation in b2World are created automatically when a b2Fixture
+/// Shapes used for simulation in P2DScene are created automatically when a P2DFixture
 /// is created. Shapes may encapsulate a one or more child shapes.
 class P2DBaseObject
 {
@@ -39,7 +38,7 @@ public:
     virtual ~P2DBaseObject() {}
 
 	/// Clone the concrete shape using the provided allocator.
-    //virtual P2DBaseShape* Clone(b2BlockAllocator* allocator) const = 0;
+    virtual P2DBaseObject* Clone(P2DBlockMem* allocator) const = 0;
 
 	/// Get the type of this shape. You can use this to down cast to the concrete shape.
 	/// @return the shape type.
@@ -58,14 +57,14 @@ public:
 	/// @param input the ray-cast input parameters.
 	/// @param transform the transform to be applied to the shape.
 	/// @param childIndex the child shape index
-//	virtual bool RayCast(b2RayCastOutput* output, const b2RayCastInput& input,
-    //					const b2Transform& transform, int32 childIndex) const = 0;
+    virtual bool RayCast(P2DRayCastOutput* output, const P2DRayCastInput& input,
+                        const P2DTransform& transform, int32 childIndex) const = 0;
 
 	/// Given a transform, compute the associated axis aligned bounding box for a child shape.
 	/// @param aabb returns the axis aligned box.
 	/// @param xf the world transform of the shape.
 	/// @param childIndex the child shape
-    //virtual void ComputeAxisAlignedBoundingBox(P2DAABB* aabb, const P2DTransform& xf, int32 childIndex) const = 0;
+    virtual void ComputeAABB(P2DAABB* aabb, const P2DTransform& xf, int32 childIndex) const = 0;
 
 	/// Compute the mass properties of this shape using its dimensions and density.
 	/// The inertia tensor is computed about the local origin.
