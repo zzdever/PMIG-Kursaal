@@ -14,6 +14,7 @@
 #include "p2dengine/scene/p2dscenemanager.h"
 #include "p2dengine/scene/p2dbody.h"
 #include "p2dengine/scene/p2dfixture.h"
+#include "p2dengine/general/p2dparams.h"
 
 
 class DrawingPolygonItem;

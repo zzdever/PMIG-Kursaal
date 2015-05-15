@@ -1,5 +1,7 @@
 #include "scenemanager.h"
 
+
+
 SceneManager::SceneManager()
 {
     isDrawing = false;
@@ -31,7 +33,7 @@ void SceneManager::Render()
     P2DVec2 position = body->GetPosition();
     float32 angle = body->GetAngle();
 
-    //int bodyCount = scene->GetBodyCount();
+    //qDebug()<< scene->GetBodyCount();
 
     for(P2DBody* bodyList = scene->GetBodyList();
         bodyList; bodyList = bodyList->GetNext())
@@ -130,6 +132,7 @@ void SceneManager::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void SceneManager::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+//qDebug()<<"engine position"<<Coordinate::MapToEngine(event->scenePos());
     if(isDrawing){
         drawingItem->AddPoint(event->scenePos());
     }
@@ -174,12 +177,17 @@ DrawingPolygonItem::DrawingPolygonItem(QColor color, QPointF p)
     //setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
 }
 
+
+
 void DrawingPolygonItem::AddPoint(QPointF p)
 {
+    //p = Coordinate::MapToEngine(p);
+
     int size = points.size();
     // we do not allow the second point is too close to the first one
-    if(size==1 && QVector2D(p - points.at(size - 1)).length()<FLT_EPSILON)
+    if(size==1 && QVector2D(p - points.at(size - 1)).length()<ENGINE_SCENE_MINIMUM_HALF){
         return;
+    }
 
     bool pop = false;
     if(size >= 2){
@@ -190,12 +198,13 @@ void DrawingPolygonItem::AddPoint(QPointF p)
 
         qreal crossProduct = v0.x()*v1.y() - v1.x()*v0.y();
         qreal sinV = crossProduct/(v0.length()*v1.length());
-        if(qAbs(sinV) < sin(0.05)/*in radian*/ || v1.length()<FLT_EPSILON)
+        if(qAbs(sinV) < sin(0.1)/*in radian*/ || v1.length()<ENGINE_SCENE_MINIMUM_HALF)
             pop = true;
     }
 
-    if(pop)
+    if(pop){
         points.pop_back();
+    }
 
     points.push_back(p);
     if(p.x()<minx) minx = p.x();
@@ -206,6 +215,9 @@ void DrawingPolygonItem::AddPoint(QPointF p)
 
 QRectF DrawingPolygonItem::boundingRect() const
 {
+    //QPointF pMin = Coordinate::MapToScene(QPointF(minx, miny));
+    //QPointF pMax = Coordinate::MapToScene(QPointF(maxx, maxy));
+    //return QRectF(pMin.x(), pMin.y(), pMax.x()-pMin.x(), pMax.y()-pMin.y());
     return QRectF(minx, miny, maxx-minx, maxy-miny);
 }
 
@@ -236,7 +248,7 @@ void DrawingPolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
         painter->setBrush(b);
     }
 
-    painter->drawRect(QRectF(minx, miny, maxx-minx, maxy-miny));
+    painter->drawRect(boundingRect());
 }
 
 

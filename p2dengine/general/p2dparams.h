@@ -13,6 +13,14 @@
 
 #define PI 3.14159265359f
 
+// Scale
+/// The maximum size allowed in the scene, in meters and in half.
+#define ENGINE_SCENE_MAXIMUM_HALF 5.0
+
+/// The minimum size allowed in the scene, in meters and in half.
+#define ENGINE_SCENE_MINIMUM_HALF 0.1
+
+
 // Collision
 
 /// The maximum number of contact points between two convex shapes. Do

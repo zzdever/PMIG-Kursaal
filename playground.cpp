@@ -63,7 +63,8 @@ PlayGround::PlayGround(const QString &name, QWidget *parent)
 {
     Q_UNUSED(name);
 
-    zoomAmount = toZoomAmount = 0.;
+    zoomAmount = 2.0;
+    toZoomAmount = 0.;
     toTranslation = QPointF(0,0);
     lastMousePressPos = QPoint(0,0);
     isDragging = false;
@@ -164,8 +165,8 @@ void PlayGround::setupMatrix()
 
     setMatrix(matrix);
 
-    if(zoomAmount<-4.5) zoomAmount = -4.5;
-    if(zoomAmount>2.0) zoomAmount = 2.0;
+    if(zoomAmount<0) zoomAmount = 0;
+    if(zoomAmount>5.0) zoomAmount = 5.0;
 }
 
 

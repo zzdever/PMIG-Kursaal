@@ -72,7 +72,9 @@ HEADERS  += mainwindow.h \
     p2dengine/scene/p2dbody.h \
     p2dengine/scene/p2dcontactmanager.h \
     p2dengine/collision/p2dpolygoncontact.h \
-    p2dengine/scene/p2disland.h
+    p2dengine/scene/p2disland.h \
+    params.h
+    
 
 FORMS    += mainwindow.ui
 
@@ -82,12 +84,12 @@ RESOURCES += \
 
 
 
-INCLUDEPATH += /usr/local/include/opencv/
-INCLUDEPATH += /usr/local/include/
+INCLUDEPATH += C:\opencv-2.4.10\build\include\opencv
+INCLUDEPATH += C:\opencv-2.4.10\build\include
 
 
-LIBS += /usr/local/lib/libopencv_core.dylib\
-        /usr/local/lib/libopencv_highgui.dylib\
-        /usr/local/lib/libopencv_imgproc.dylib
-
-OTHER_FILES +=
+LIBS += C:\opencv-2.4.10\build\x64\vc12\lib\opencv_core2410.lib\
+        C:\opencv-2.4.10\build\x64\vc12\lib\opencv_highgui2410.lib\
+        C:\opencv-2.4.10\build\x64\vc12\lib\opencv_imgproc2410.lib
+        #/usr/local/lib/libopencv_highgui.dylib\
+        #/usr/local/lib/libopencv_imgproc.dylib

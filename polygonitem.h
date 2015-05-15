@@ -4,6 +4,8 @@
 #include <QColor>
 #include <QGraphicsItem>
 
+#include "params.h"
+
 #include "p2dengine/objects/p2dpolygonobject.h"
 #include "p2dengine/scene/p2dbody.h"
 #include "p2dengine/scene/p2dscenemanager.h"

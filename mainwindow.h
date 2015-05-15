@@ -43,6 +43,7 @@
 #include "toolbox.h"
 #include "playground.h"
 #include "scenemanager.h"
+#include "params.h"
 
 class ToolBar;
 QT_FORWARD_DECLARE_CLASS(QMenu)

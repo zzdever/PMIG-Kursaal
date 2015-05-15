@@ -15,14 +15,15 @@ MainWindow::MainWindow(QWidget *parent)
     :QMainWindow(parent)
 {
     setObjectName("MainWindow");
-    setWindowTitle("PMIGEngine");
+    setWindowTitle("PMIG Kursaal");
     setAutoFillBackground(true);
 
 
     playGround = new PlayGround("PlayGround");
     setCentralWidget(playGround);
     sceneManager = new SceneManager;
-    sceneManager->setSceneRect(-10000,-10000,20000,20000);
+    sceneManager->setSceneRect(-SCENE_WIDTH_HALF, -SCENE_HEIGHT_HALF,
+                               SCENE_WIDTH_HALF*2, SCENE_WIDTH_HALF*2);
     playGround->setScene(sceneManager);
 
     centerScribbleArea = new ScribbleArea(this);
@@ -43,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
     QPalette bgPalette;
     bgPalette.setBrush(QPalette::Background, QBrush(bg));
     centerScribbleArea->setPalette(bgPalette);
+    playGround->setBackgroundBrush(QBrush(bg));
 
     centerScribbleArea->setFocusPolicy(Qt::WheelFocus);
 
