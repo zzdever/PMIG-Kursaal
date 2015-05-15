@@ -1,41 +1,10 @@
 #include "polygonitem.h"
 
 #include <QtWidgets>
+
+#include "utils.h"
+
 #include "p2dengine/general/p2dparams.h"
-
-namespace Coordinate {
-
-QPointF MapToEngine(QPointF pIn)
-{//qDebug()<<"MapToEngine input"<<pIn;
-    qreal x = (pIn.x()-(-SCENE_WIDTH_HALF)) / (SCENE_WIDTH_HALF*2)
-            * (ENGINE_SCENE_MAXIMUM_HALF*2)
-            + (-ENGINE_SCENE_MAXIMUM_HALF);
-
-    qreal y = (pIn.y()-(-SCENE_HEIGHT_HALF)) / (SCENE_HEIGHT_HALF*2)
-            * (ENGINE_SCENE_MAXIMUM_HALF*2)
-            + (-ENGINE_SCENE_MAXIMUM_HALF);
-
-    QPointF pOut(x,y);
-
-    return pOut;
-}
-
-QPointF MapToScene(QPointF pIn)
-{//qDebug()<<"MapToScene input"<<pIn;
-    qreal x = (pIn.x()-(-ENGINE_SCENE_MAXIMUM_HALF)) / (ENGINE_SCENE_MAXIMUM_HALF*2)
-            * (SCENE_WIDTH_HALF*2)
-            + (-SCENE_WIDTH_HALF);
-
-    qreal y = (pIn.y()-(-ENGINE_SCENE_MAXIMUM_HALF)) / (ENGINE_SCENE_MAXIMUM_HALF*2)
-            * (SCENE_HEIGHT_HALF*2)
-            + (-SCENE_HEIGHT_HALF);
-
-    QPointF pOut(x,y);
-
-    return pOut;
-}
-}
-
 
 
 PolygonItem::PolygonItem(QColor color)
@@ -87,8 +56,8 @@ QRectF PolygonItem::boundingRect() const
     return QRectF(minx, miny, maxx-minx, maxy-miny);
     */
 
-    QPointF pMin = Coordinate::MapToScene(QPointF(aabb->lowerBound.x, aabb->lowerBound.y));
-    QPointF pMax = Coordinate::MapToScene(QPointF(aabb->upperBound.x, aabb->upperBound.y));
+    QPointF pMin = CoordinateInterface::MapToScene(P2DVec2(aabb->lowerBound.x, aabb->lowerBound.y));
+    QPointF pMax = CoordinateInterface::MapToScene(P2DVec2(aabb->upperBound.x, aabb->upperBound.y));
     return QRectF(pMin.x(), pMin.y(), pMax.x()-pMin.x(), pMax.y()-pMin.y());
 
 }
@@ -103,11 +72,19 @@ void PolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    //int count = p2DPolygonObject->GetVertexCount();
+    // int count = p2DPolygonObject->GetVertexCount();
     // TODO Do we need to check the count again?
     // I think this is not necessary but not sure there is no problem.
 
     QColor c = (option->state & QStyle::State_MouseOver) ? QColor(color.red(),color.green(),color.blue(),70) : this->color;
+
+    this->setRotation(body->GetAngle());
+    this->setPos(CoordinateInterface::MapToScene(body->GetPosition()));
+    /*
+    this->setTransform(QTransform(cos(angle), sin(angle), position.x,
+                                  -sin(angle), cos(angle), position.y,
+                                  0,           0,          1.0), false);
+                                  */
 
     //if (count > 1) {
     if (1) {
@@ -135,18 +112,17 @@ void PolygonItem::BindP2DBody(P2DScene* scene, QVector<QPointF> points)
     P2DVec2 pts[P2D_MAX_POLYGON_VERTICES];
     int32 count = points.size();
 
-    // Compute the centroid of the points.
+    // Compute the centroid of the points in scene coordinate.
     for(int i=0; i<count; i++){
         pts[i] = P2DVec2((float32)points.at(i).x(), (float32)points.at(i).y());
     }
     P2DVec2 centroid = polygonObject.GetCentroid(pts, count);
+    qDebug()<<"centroid"<<centroid.x<<" "<<centroid.y;
+    this->setPos(QPointF(centroid.x, centroid.y));
 
 qDebug()<<"input size"<<count;
-    QPointF pTmp;
     for(int i=0; i<count; i++){
-        pTmp = Coordinate::MapToEngine(points.at(i) - QPointF(centroid.x, centroid.y));
-        //pts[i] = P2DVec2((float32)points.at(i).x(), (float32)points.at(i).y());
-        pts[i] = P2DVec2((float32)pTmp.x(), (float32)pTmp.y());
+        pts[i] = CoordinateInterface::MapToEngine(points.at(i) - QPointF(centroid.x, centroid.y));
     }
     polygonObject.SetPoints(pts, count);
     count = polygonObject.GetVertexCount();
@@ -163,17 +139,16 @@ qDebug()<<"bounding area"<<(aabb->lowerBound.x - aabb->upperBound.x)*(aabb->lowe
 
     // Generate the path.
     // Note this is in local coordinate, with origin at centroid.
-    path.moveTo(Coordinate::MapToScene(QPointF(polygonObject.GetVertex(0).x,
-                        polygonObject.GetVertex(0).y)));
+    path.moveTo(CoordinateInterface::MapToScene(polygonObject.GetVertex(0)));
     for (int i = 1; i < count; ++i)
-        path.lineTo(Coordinate::MapToScene(QPointF(polygonObject.GetVertex(i).x,
-                            polygonObject.GetVertex(i).y)));
+        path.lineTo(CoordinateInterface::MapToScene(polygonObject.GetVertex(i)));
 
 
 
     // Define the dynamic body. We set its position and call the body factory.
     P2DBodyDef bodyDef;
     bodyDef.type = P2D_DYNAMIC_BODY;
+    centroid = CoordinateInterface::MapToEngine(QPointF(centroid.x, centroid.y));
     bodyDef.position.Set(centroid.x, centroid.y);
     body = scene->CreateBody(&bodyDef);
 
