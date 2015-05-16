@@ -29,3 +29,19 @@ QPointF CoordinateInterface::MapToScene(P2DVec2 pIn)
 
     return pOut;
 }
+
+/*
+ *  Rad   Deg
+ *  --- = ---
+ *  PI    180
+ */
+double CoordinateInterface::RadToDeg(double Rad)
+{
+    return Rad/PI*180;
+}
+
+double CoordinateInterface::DegToRad(double Deg)
+{
+    return Deg/180*PI;
+}
+

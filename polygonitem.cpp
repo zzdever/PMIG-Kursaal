@@ -15,6 +15,8 @@ PolygonItem::PolygonItem(QColor color)
     setFlags(ItemIsSelectable | ItemIsMovable);
     setAcceptHoverEvents(true);
 
+    timer.Reset();
+
 /*
     qDebug()<<"input size"<<points.size();
     p2DPolygonObject = new P2DPolygonObject;
@@ -76,22 +78,32 @@ void PolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     // TODO Do we need to check the count again?
     // I think this is not necessary but not sure there is no problem.
 
-    QColor c = (option->state & QStyle::State_MouseOver) ? QColor(color.red(),color.green(),color.blue(),70) : this->color;
+    if((int)timer.GetMilliseconds() % (500)==0){
+        qDebug()<<"this position"<<this->pos();
+        qDebug()<<"get position"<<CoordinateInterface::MapToScene(body->GetPosition());
+    }
 
-    this->setRotation(body->GetAngle());
+    QColor c = (option->state & QStyle::State_MouseOver && P2D_STATIC_BODY != body->GetType()) ?
+                QColor(color.red(),color.green(),color.blue(),70) : this->color;
+
+    this->setRotation(CoordinateInterface::RadToDeg(body->GetAngle()));
+    //qDebug()<<"paint position"<<CoordinateInterface::MapToScene(body->GetPosition());
+    //qDebug()<<"setpos"<<CoordinateInterface::MapToScene(P2DMul(body->GetTransform(), body->GetPosition()));
     this->setPos(CoordinateInterface::MapToScene(body->GetPosition()));
+
     /*
     this->setTransform(QTransform(cos(angle), sin(angle), position.x,
                                   -sin(angle), cos(angle), position.y,
                                   0,           0,          1.0), false);
                                   */
 
-    //if (count > 1) {
-    if (1) {
-        QPen p = painter->pen();
-        QBrush b = painter->brush();
+    QPen p = painter->pen();
+    QBrush b = painter->brush();
 
-        QPen pnew(QPen(c, 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    //if (count > 1) {
+    {
+        //QPen pnew(QPen(c, 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        QPen pnew(QPen(QColor(0,0,0), 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         //pnew.setCosmetic(true);
         painter->setPen(pnew);
         QBrush bnew(QBrush(c, Qt::SolidPattern));
@@ -100,27 +112,34 @@ void PolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         painter->drawPath(path);
         painter->setPen(p);
         painter->setBrush(b);
-    }
 
-    painter->drawRect(boundingRect());
+        painter->drawRect(boundingRect());
+    }   
 }
 
-void PolygonItem::BindP2DBody(P2DScene* scene, QVector<QPointF> points)
+void PolygonItem::BindP2DBody(P2DScene* scene, QVector<QPointF> points, P2DBodyType bodyType)
 {
     // Define the polygon shape for our dynamic body.
     P2DPolygonObject polygonObject;
     P2DVec2 pts[P2D_MAX_POLYGON_VERTICES];
     int32 count = points.size();
+    assert(count<P2D_MAX_POLYGON_VERTICES);
 
     // Compute the centroid of the points in scene coordinate.
+    // Note there is a little complexity here. We need to SetPoints first to sort the
+    // points in the order of the convex hull. Otherwise the area may be negative if
+    // the points are in the opposite order of the convex hull.
     for(int i=0; i<count; i++){
         pts[i] = P2DVec2((float32)points.at(i).x(), (float32)points.at(i).y());
     }
-    P2DVec2 centroid = polygonObject.GetCentroid(pts, count);
-    qDebug()<<"centroid"<<centroid.x<<" "<<centroid.y;
+    polygonObject.SetPoints(pts, count);
+    // Note here centroid is in scene coordinate.
+    P2DVec2 centroid = polygonObject.GetCentroid(polygonObject.GetVertices(), polygonObject.GetVertexCount());
     this->setPos(QPointF(centroid.x, centroid.y));
+qDebug()<<"centroid"<<centroid.x<<" "<<centroid.y;
 
 qDebug()<<"input size"<<count;
+    // Now we set the points. The polygon is draw in its local coordinate.
     for(int i=0; i<count; i++){
         pts[i] = CoordinateInterface::MapToEngine(points.at(i) - QPointF(centroid.x, centroid.y));
     }
@@ -131,10 +150,11 @@ qDebug()<<"output size"<<count;
     // Precompute the AABB
     P2DTransform transform;
     transform.SetIdentity();
+    //transform.Set(centroid, 0);
     aabb = new P2DAABB();
     polygonObject.ComputeAABB(aabb, transform);
-qDebug()<<"width"<<(aabb->lowerBound.x - aabb->upperBound.x);
-qDebug()<<"height"<<(aabb->lowerBound.y-aabb->upperBound.y);
+qDebug()<<"width"<<(-aabb->lowerBound.x+aabb->upperBound.x);
+qDebug()<<"height"<<(-aabb->lowerBound.y+aabb->upperBound.y);
 qDebug()<<"bounding area"<<(aabb->lowerBound.x - aabb->upperBound.x)*(aabb->lowerBound.y-aabb->upperBound.y);
 
     // Generate the path.
@@ -147,9 +167,9 @@ qDebug()<<"bounding area"<<(aabb->lowerBound.x - aabb->upperBound.x)*(aabb->lowe
 
     // Define the dynamic body. We set its position and call the body factory.
     P2DBodyDef bodyDef;
-    bodyDef.type = P2D_DYNAMIC_BODY;
-    centroid = CoordinateInterface::MapToEngine(QPointF(centroid.x, centroid.y));
-    bodyDef.position.Set(centroid.x, centroid.y);
+    bodyDef.type = bodyType;
+    P2DVec2 c = CoordinateInterface::MapToEngine(QPointF(centroid.x, centroid.y));
+    bodyDef.position.Set(c.x, c.y);
     body = scene->CreateBody(&bodyDef);
 
 
@@ -157,29 +177,64 @@ qDebug()<<"bounding area"<<(aabb->lowerBound.x - aabb->upperBound.x)*(aabb->lowe
     P2DFixtureDef fixtureDef;
     fixtureDef.shape = &polygonObject;
     // Set the box density to be non-zero, so it will be dynamic.
-    fixtureDef.density = 1.0f;
+    if(bodyType == P2DBodyType::P2D_DYNAMIC_BODY)
+        fixtureDef.density = 1.0f;
     // Override the default friction.
-    fixtureDef.friction = 0.3f;
+    fixtureDef.friction = 0.9f;
 
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
+
+
+/*
+    qDebug()<<"get position 1"<<CoordinateInterface::MapToScene(this->GetP2DBody()->GetPosition());
+    P2DTransform xf;
+    xf.Set(P2DVec2(1,1),0);
+
+    xf = P2DMul(xf, body->GetTransform());
+    body->SetTransform(xf.position, 0);
+    qDebug()<<"get position 2"<<CoordinateInterface::MapToScene(this->GetP2DBody()->GetPosition());
+    */
 }
 
 void PolygonItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    if(P2D_STATIC_BODY != body->GetType())
+        body->SetActive(false);
+
     QGraphicsItem::mousePressEvent(event);
     update();
 }
 
 void PolygonItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug()<<this->sceneTransform();
+    if(P2D_DYNAMIC_BODY != body->GetType()) {
+        event->accept();
+        return;
+    }
+
+    // Note event->pos() returns the mouse cursor position in item coordinates.
+    body->SetTransform(CoordinateInterface::MapToEngine(QGraphicsItem::mapToScene(event->pos())), body->GetAngle());
+
+    //qDebug()<<"should be at"<<CoordinateInterface::MapToEngine(event->pos()).x<<CoordinateInterface::MapToEngine(event->pos()).y;
+    //qDebug()<<"actual at"<<body->GetPosition().x<<body->GetPosition().y;
+
+    /*
+    P2DTransform xf;
+    xf.Set(CoordinateInterface::MapToEngine(event->pos())
+           - CoordinateInterface::MapToEngine(event->lastPos()), 0);
+    xf = P2DMul(xf, body->GetTransform());
+    body->SetTransform(xf.position, xf.rotation.GetAngle());
+    */
+
     QGraphicsItem::mouseMoveEvent(event);
     update();
 }
 
 void PolygonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    body->SetActive(true);
+
     QGraphicsItem::mouseReleaseEvent(event);
     update();
 }

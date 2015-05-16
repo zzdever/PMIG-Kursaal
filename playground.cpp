@@ -63,9 +63,9 @@ PlayGround::PlayGround(const QString &name, QWidget *parent)
 {
     Q_UNUSED(name);
 
-    zoomAmount = 2.0;
+    zoomAmount = 2.5;
     toZoomAmount = 0.;
-    toTranslation = QPointF(0,0);
+    toTranslation = QPointF(0, -zoomAmount*SCENE_HEIGHT_HALF*7/10);
     lastMousePressPos = QPoint(0,0);
     isDragging = false;
 
@@ -166,7 +166,7 @@ void PlayGround::setupMatrix()
     setMatrix(matrix);
 
     if(zoomAmount<0) zoomAmount = 0;
-    if(zoomAmount>5.0) zoomAmount = 5.0;
+    if(zoomAmount>3.0) zoomAmount = 3.0;
 }
 
 
@@ -226,6 +226,7 @@ void Chip::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     if (option->state & QStyle::State_MouseOver)
         fillColor = fillColor.light(125);
 
+
     const qreal lod = option->levelOfDetailFromTransform(painter->worldTransform());
     if (lod < 0.2) {
         if (lod < 0.125) {
@@ -240,6 +241,7 @@ void Chip::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
         return;
     }
 
+
     QPen oldPen = painter->pen();
     QPen pen = oldPen;
     int width = 2;
@@ -252,6 +254,7 @@ void Chip::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
     painter->drawRect(QRect(14, 14, 79, 39));
     painter->setBrush(b);
+
 
     if (lod >= 1) {
         painter->setPen(QPen(Qt::gray, 1));
@@ -272,6 +275,7 @@ void Chip::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
         painter->drawText(170, 220, QString("Manufacturer: Chip Manufacturer"));
         painter->restore();
     }
+
 
     // Draw lines
     QVarLengthArray<QLineF, 36> lines;

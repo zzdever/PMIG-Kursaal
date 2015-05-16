@@ -9,6 +9,7 @@
 #include "p2dengine/objects/p2dpolygonobject.h"
 #include "p2dengine/scene/p2dbody.h"
 #include "p2dengine/scene/p2dscenemanager.h"
+#include "p2dengine/general/p2dtimer.h"
 
 class PolygonItem : public QGraphicsItem
 {
@@ -21,7 +22,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget);
 
 public: /*Related to p2dengine*/
-    void BindP2DBody(P2DScene *scene, QVector<QPointF> points);
+    void BindP2DBody(P2DScene *scene, QVector<QPointF> points, P2DBodyType bodyType=P2DBodyType::P2D_DYNAMIC_BODY);
     P2DBody* GetP2DBody(){return body;}
 
 protected:
@@ -43,6 +44,12 @@ private:
 private: /*Related to p2dengine*/
     P2DBody* body;
     P2DAABB *aabb;
+
+
+private:
+    P2DTimer timer;
+
+
 };
 
 #endif // POLYGONITEM_H
