@@ -104,7 +104,7 @@ void SceneManager::InitP2DEngine()
     points.push_back(QPointF(SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*4/5));
     points.push_back(QPointF(SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*5/5));
     points.push_back(QPointF(-SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*5/5));
-    polyItem->BindP2DBody(scene, points,P2DBodyType::P2D_STATIC_BODY);
+    polyItem->BindP2DBody(scene, points, P2D_STATIC_BODY);
     addItem(polyItem);
 }
 

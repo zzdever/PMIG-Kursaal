@@ -177,7 +177,7 @@ qDebug()<<"bounding area"<<(aabb->lowerBound.x - aabb->upperBound.x)*(aabb->lowe
     P2DFixtureDef fixtureDef;
     fixtureDef.shape = &polygonObject;
     // Set the box density to be non-zero, so it will be dynamic.
-    if(bodyType == P2DBodyType::P2D_DYNAMIC_BODY)
+    if(bodyType == P2D_DYNAMIC_BODY)
         fixtureDef.density = 1.0f;
     // Override the default friction.
     fixtureDef.friction = 0.9f;

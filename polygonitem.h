@@ -22,7 +22,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget);
 
 public: /*Related to p2dengine*/
-    void BindP2DBody(P2DScene *scene, QVector<QPointF> points, P2DBodyType bodyType=P2DBodyType::P2D_DYNAMIC_BODY);
+    void BindP2DBody(P2DScene *scene, QVector<QPointF> points, P2DBodyType bodyType = P2D_DYNAMIC_BODY);
     P2DBody* GetP2DBody(){return body;}
 
 protected:
