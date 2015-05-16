@@ -393,6 +393,12 @@ const P2DVec2& P2DPolygonObject::GetVertex(int32 index) const
     return m_vertices[index];
 }
 
+const P2DVec2* P2DPolygonObject::GetVertices() const
+{
+    return m_vertices;
+}
+
+
 bool P2DPolygonObject::ValidateConvexity() const
 {
 	for (int32 i = 0; i < m_count; ++i)
@@ -420,7 +426,7 @@ bool P2DPolygonObject::ValidateConvexity() const
 
 	return true;
 }
-
+#include <QDebug>
 P2DVec2 P2DPolygonObject::GetCentroid(const P2DVec2* vs, int32 count)
 {
     assert(count >= 3);
@@ -460,6 +466,7 @@ P2DVec2 P2DPolygonObject::GetCentroid(const P2DVec2* vs, int32 count)
         c += triangleArea * inv3 * (p1 + p2 + p3);
     }
 
+qDebug()<<"assert area"<<area;
     // Centroid
     assert(area > FLT_EPSILON);
     c *= 1.0f / area;

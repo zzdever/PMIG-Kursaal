@@ -353,6 +353,18 @@ struct P2DTransform
         rotation.Set(angle);
     }
 
+    /// Set this based on the position.
+    void SetPosition(const P2DVec2& pos)
+    {
+        position = pos;
+    }
+
+    /// Set this based on the angle.
+    void SetAngle(float32 angle)
+    {
+        rotation.Set(angle);
+    }
+
     P2DVec2 position;
     P2DRot rotation;
 };

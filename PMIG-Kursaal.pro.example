@@ -42,7 +42,8 @@ SOURCES += main.cpp\
     p2dengine/scene/p2dscenemanager.cpp \
     p2dengine/collision/p2dpolygoncontact.cpp \
     p2dengine/scene/p2disland.cpp \
-    p2dengine/collision/p2dcollidepolygon.cpp
+    p2dengine/collision/p2dcollidepolygon.cpp \
+    utils.cpp
 
 HEADERS  += mainwindow.h \
     scribblearea.h \
@@ -73,7 +74,8 @@ HEADERS  += mainwindow.h \
     p2dengine/scene/p2dcontactmanager.h \
     p2dengine/collision/p2dpolygoncontact.h \
     p2dengine/scene/p2disland.h \
-    params.h
+    params.h \
+    utils.h
     
 
 FORMS    += mainwindow.ui

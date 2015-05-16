@@ -12,6 +12,8 @@ namespace CoordinateInterface {
 P2DVec2 MapToEngine(QPointF pIn);
 QPointF MapToScene(P2DVec2 pIn);
 
+double RadToDeg(double Rad);
+double DegToRad(double Deg);
 }
 
 

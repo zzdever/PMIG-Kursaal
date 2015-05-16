@@ -58,6 +58,9 @@ public:
 	/// Get a vertex by index.
     const P2DVec2& GetVertex(int32 index) const;
 
+    /// Get all vertices
+    const P2DVec2* GetVertices() const;
+
 	/// Validate convexity. This is a very time consuming operation.
 	/// @returns true if valid
     bool ValidateConvexity() const;

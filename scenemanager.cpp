@@ -6,12 +6,14 @@ SceneManager::SceneManager()
 {
     isDrawing = false;
 
-    QColor color(100,100,100);
+    InitP2DEngine();
+
+    /*
+    QColor color(50,50,50);
     item = new Chip(color, 0, 0);
     item->setPos(QPointF(0, 0));
     addItem(item);
-
-    InitP2DEngine();
+    */
 }
 
 SceneManager::~SceneManager()
@@ -29,8 +31,8 @@ void SceneManager::Render()
     // It is generally best to keep the time step and iterations fixed.
     scene->Step(timeStep, velocityIterations, positionIterations);
 
-#define DEBUG
-#ifdef DEBUG
+#define DEBUG 0
+#if DEBUG
     int i=0;
     for(P2DBody* bodyList = scene->GetBodyList();
         bodyList; bodyList = bodyList->GetNext(), i++)
@@ -74,10 +76,11 @@ void SceneManager::InitP2DEngine()
 
 
     // Define the gravity vector.
-    P2DVec2 gravity(0.0f, -10.0f);
+    P2DVec2 gravity(0.0f, 10.0f);
     // Construct a world object, which will hold and simulate the rigid bodies.
     scene = new P2DScene(gravity);
 
+    /*
     // Define the ground body.
     P2DBodyDef groundBodyDef;
     groundBodyDef.position.Set(0.0f, 0.0f);
@@ -92,28 +95,17 @@ void SceneManager::InitP2DEngine()
 
     // Add the ground fixture to the ground body.
     groundBody->CreateFixture(&groundBox, 0.0f);
+    */
 
-
-    // Define the dynamic body. We set its position and call the body factory.
-    P2DBodyDef bodyDef;
-    bodyDef.type = P2D_DYNAMIC_BODY;
-    bodyDef.position.Set(0.0f, 4.0f);
-    body = scene->CreateBody(&bodyDef);
-
-    // Define another box shape for our dynamic body.
-    P2DPolygonObject dynamicBox;
-    dynamicBox.SetARect(1.0f, 1.0f);
-
-    // Define the dynamic body fixture.
-    P2DFixtureDef fixtureDef;
-    fixtureDef.shape = &dynamicBox;
-    // Set the box density to be non-zero, so it will be dynamic.
-    fixtureDef.density = 1.0f;
-    // Override the default friction.
-    fixtureDef.friction = 0.3f;
-
-    // Add the shape to the body.
-    body->CreateFixture(&fixtureDef);
+    // Add the ground body.
+    polyItem = new PolygonItem(QColor(21,25,123));
+    QVector<QPointF> points;
+    points.push_back(QPointF(-SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*4/5));
+    points.push_back(QPointF(SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*4/5));
+    points.push_back(QPointF(SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*5/5));
+    points.push_back(QPointF(-SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*5/5));
+    polyItem->BindP2DBody(scene, points,P2DBodyType::P2D_STATIC_BODY);
+    addItem(polyItem);
 }
 
 

@@ -150,6 +150,10 @@ public:
 	/// @return the world position of the body's origin.
 	const P2DVec2& GetPosition() const;
 
+    /// Set the world body origin position.
+    /// @param position the world position of the body's local origin.
+    void SetPosition(P2DVec2 position);
+
 	/// Get the angle in radians.
 	/// @return the current world rotation angle in radians.
 	float32 GetAngle() const;
@@ -465,6 +469,11 @@ inline const P2DTransform& P2DBody::GetTransform() const
 inline const P2DVec2& P2DBody::GetPosition() const
 {
     return m_xf.position;
+}
+
+inline void P2DBody::SetPosition(P2DVec2 position)
+{
+    m_xf.SetPosition(position);
 }
 
 inline float32 P2DBody::GetAngle() const
