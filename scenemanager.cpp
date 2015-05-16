@@ -104,7 +104,7 @@ void SceneManager::InitP2DEngine()
     points.push_back(QPointF(SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*4/5));
     points.push_back(QPointF(SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*5/5));
     points.push_back(QPointF(-SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*5/5));
-    polyItem->BindP2DBody(scene, points,P2DBodyType::P2D_STATIC_BODY);
+    polyItem->BindP2DBody(scene, points, P2D_STATIC_BODY);
     addItem(polyItem);
 }
 
@@ -124,7 +124,6 @@ void SceneManager::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void SceneManager::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-//qDebug()<<"engine position"<<Coordinate::MapToEngine(event->scenePos());
     if(isDrawing){
         drawingItem->AddPoint(event->scenePos());
     }
