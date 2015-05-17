@@ -21,6 +21,7 @@ P2DBaseObject* P2DPolygonObject::Clone(P2DBlockMem* allocator) const
 
 void P2DPolygonObject::SetPoints(const P2DVec2* vertices, int32 count)
 {
+    assert(count <= P2D_MAX_POLYGON_VERTICES);
     assert(3 <= count && count <= P2D_MAX_POLYGON_VERTICES);
 
     if (count < 3)

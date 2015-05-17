@@ -14,7 +14,7 @@
 class PolygonItem : public QGraphicsItem
 {
 public:
-    PolygonItem(QColor color);
+    PolygonItem(QColor color, QGraphicsScene *parent);
     ~PolygonItem();
 
     QRectF boundingRect() const;
@@ -24,6 +24,9 @@ public:
 public: /*Related to p2dengine*/
     void BindP2DBody(P2DScene *scene, QVector<QPointF> points, P2DBodyType bodyType = P2D_DYNAMIC_BODY);
     P2DBody* GetP2DBody(){return body;}
+    void SetTexture(QImage& tex) {
+        texture = (tex.copy(0,0,tex.width(),tex.height()));
+    }
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -32,23 +35,23 @@ protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
 
 private:
-    //P2DPolygonObject *p2DPolygonObject;
-    //P2DTransform *transform;
-    //
+    QGraphicsScene *parentScene;
 
     int x;
     int y;
     QColor color;
     QPainterPath path;
 
+    QImage texture;
+    bool useTexture;
+
 private: /*Related to p2dengine*/
     P2DBody* body;
     P2DAABB *aabb;
 
 
-private:
+private: /*timing*/
     P2DTimer timer;
-
 
 };
 

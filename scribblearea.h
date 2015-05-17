@@ -186,7 +186,8 @@ private:
     /// @brief Rotate the selected area, actually do
     IplImage* rotateImage2(IplImage* img, double angle);
 
-
+public:
+    QImage& GetQImage();
 };
 
 #endif

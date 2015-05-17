@@ -34,6 +34,7 @@
 #include <QObject>
 #include <QTimer>
 #include <QDebug>
+#include <QStackedWidget>
 
 #include <cv.h>
 #include <highgui.h>
@@ -44,6 +45,7 @@
 #include "playground.h"
 #include "scenemanager.h"
 #include "params.h"
+#include "polygonitem.h"
 
 class ToolBar;
 QT_FORWARD_DECLARE_CLASS(QMenu)
@@ -65,8 +67,10 @@ private:
     QMenu *windowWidgetMenu;  ///< Menu Window
     QMenu *aboutMenu;   ///< Menu about
 
+    QStackedWidget *stackedWidget;
     SceneManager *sceneManager;
     PlayGround *playGround;
+    PolygonItem *texturingItem;
 
     QTimer *timer;
     //QBasicTimer videoRecTimer;
@@ -76,6 +80,8 @@ public:
     /// Constructor
     MainWindow(QWidget *parent = 0);
     //~MainWindow();
+
+    MainWindow* getInstance() {return this;}
 
     //void timerEvent(QTimerEvent *e);
 
@@ -149,6 +155,12 @@ private slots:
         sceneManager->Render();
         playGround->updateView();
     }
+
+    void SwitchToKurssal();
+
+public:
+    void SwitchToTextureEditing(PolygonItem *item);
+
 
 signals:
     /// Update color icons on the toolbox bar

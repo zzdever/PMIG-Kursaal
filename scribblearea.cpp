@@ -591,6 +591,10 @@ void ScribbleArea::print()
 #endif // QT_NO_PRINTER
 }
 
+QImage& ScribbleArea::GetQImage()
+{
+    return imageStackDisplay[currentImageNum];
+}
 
 //QImage ScribbleArea::CVMatToQImage(const cv::Mat& imgMat)
 //{

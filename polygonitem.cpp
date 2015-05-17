@@ -1,13 +1,17 @@
 #include "polygonitem.h"
 
+#include <QApplication>
 #include <QtWidgets>
 
+#include "scenemanager.h"
+#include "mainwindow.h"
 #include "utils.h"
 
 #include "p2dengine/general/p2dparams.h"
 
 
-PolygonItem::PolygonItem(QColor color)
+PolygonItem::PolygonItem(QColor color, QGraphicsScene *parent)
+    :parentScene(parent)
 {
     this->color = color;
     setZValue(0);
@@ -15,7 +19,11 @@ PolygonItem::PolygonItem(QColor color)
     setFlags(ItemIsSelectable | ItemIsMovable);
     setAcceptHoverEvents(true);
 
+    useTexture = false;
+
     timer.Reset();
+
+    body = NULL;
 
 /*
     qDebug()<<"input size"<<points.size();
@@ -45,6 +53,7 @@ PolygonItem::~PolygonItem()
 {
     // delete p2DPolygonObject;
     // delete transform;
+    if(body) body->GetWorld()->DestroyBody(body);
     if(aabb) delete aabb;
 }
 
@@ -102,12 +111,19 @@ void PolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
     //if (count > 1) {
     {
-        //QPen pnew(QPen(c, 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        QPen pnew(QPen(QColor(0,0,0), 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        QPen pnew(QPen(c, 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        //QPen pnew(QPen(QColor(0,0,0), 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         //pnew.setCosmetic(true);
         painter->setPen(pnew);
-        QBrush bnew(QBrush(c, Qt::SolidPattern));
-        painter->setBrush(bnew);
+        QBrush *bnew;
+
+
+        if(useTexture){
+            bnew = new QBrush(texture);
+        } else {
+            bnew = new QBrush(c, Qt::SolidPattern);
+        }
+        painter->setBrush(*bnew);
 
         painter->drawPath(path);
         painter->setPen(p);
@@ -244,7 +260,15 @@ void PolygonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 void PolygonItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
     QMenu menu;
+
+    QAction *deleteAction = menu.addAction("Delete");
+    menu.addSeparator();
     QAction *changeColorAction = menu.addAction("Change Color");
+    QAction *isUseTextureAction = menu.addAction("Use Texture");
+    isUseTextureAction->setCheckable(true);
+    isUseTextureAction->setChecked(useTexture);
+    QAction *editTextureAction = menu.addAction("Edit Texture");
+    //editTextureAction->setEnabled(isUseTextureAction->isChecked());
     menu.addSeparator();
     QAction *liquifyAction = menu.addAction("Liquify");
 
@@ -253,7 +277,21 @@ void PolygonItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         QColorDialog cDialog;
         cDialog.exec();
         this->color = cDialog.selectedColor();
+    } else if(selectedAction == deleteAction){
+        delete(this);
     } else if(selectedAction == liquifyAction){
         qDebug()<<"liquify";
+    } else if(selectedAction == isUseTextureAction){
+        useTexture = !useTexture;
+        isUseTextureAction->setChecked(useTexture);
+        //editTextureAction->setEnabled(isUseTextureAction->isChecked());
+    } else if(selectedAction == editTextureAction){
+        //static_cast<SceneManager*>(parentScene)->toggleEngine();
+        QWidgetList windows = qApp->topLevelWidgets();
+        foreach(QWidget* win, windows){
+            if(win->objectName() == "MainWindow"){
+                static_cast<MainWindow*>(win)->SwitchToTextureEditing(this);
+            }
+        }
     }
 }

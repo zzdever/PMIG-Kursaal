@@ -5,6 +5,7 @@
 SceneManager::SceneManager()
 {
     isDrawing = false;
+    isEngineRunning = true;
 
     InitP2DEngine();
 
@@ -29,7 +30,8 @@ void SceneManager::Render()
 {
     // Instruct the scene to perform a single step of simulation.
     // It is generally best to keep the time step and iterations fixed.
-    scene->Step(timeStep, velocityIterations, positionIterations);
+    if(isEngineRunning && this->isActive())
+        scene->Step(timeStep, velocityIterations, positionIterations);
 
 
 #define DEBUG 0
@@ -66,6 +68,10 @@ void SceneManager::Render()
     return;
 }
 
+void SceneManager::toggleEngine()
+{
+    isEngineRunning = ! isEngineRunning;
+}
 
 void SceneManager::InitP2DEngine()
 {
@@ -100,7 +106,7 @@ void SceneManager::InitP2DEngine()
     */
 
     // Add the ground body.
-    polyItem = new PolygonItem(QColor(21,25,123));
+    polyItem = new PolygonItem(QColor(21,25,123), this);
     QVector<QPointF> points;
     points.push_back(QPointF(-SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*4/5));
     points.push_back(QPointF(SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*4/5));
@@ -110,6 +116,33 @@ void SceneManager::InitP2DEngine()
     addItem(polyItem);
 }
 
+void SceneManager::contextMenuEvent(QGraphicsSceneContextMenuEvent* e)
+{
+    if(itemAt(e->scenePos(), QTransform()) == NULL){
+        QMenu menu;
+        QAction *clearAction = menu.addAction("Clear Scene");
+
+        QAction *selectedAction = menu.exec(e->screenPos());
+        if(selectedAction == clearAction){
+            QList<QGraphicsItem *> allItems;
+            allItems = this->items();
+            foreach(QGraphicsItem* item, allItems){
+                if(static_cast<PolygonItem*>(item)->GetP2DBody()->GetType() != P2D_STATIC_BODY){
+                    removeItem(item);
+                    if(item) delete item;
+                }
+            }
+        } else {}
+    }
+
+    QGraphicsScene::contextMenuEvent(e);
+}
+
+void SceneManager::keyPressEvent(QKeyEvent *e)
+{
+    if(e->key() == Qt::Key_Space)
+        toggleEngine();
+}
 
 void SceneManager::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -138,9 +171,11 @@ void SceneManager::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if(isDrawing){
         // TODO add to the object tree
-        polyItem = new PolygonItem(drawingItem->GetColor());
-        polyItem->BindP2DBody(scene, drawingItem->GetPoints());
-        addItem(polyItem);
+        if(drawingItem->GetPoints().size() >= 3){
+            polyItem = new PolygonItem(drawingItem->GetColor(), this);
+            polyItem->BindP2DBody(scene, drawingItem->GetPoints());
+            addItem(polyItem);
+        }
 
         isDrawing = false;
         removeItem(drawingItem);

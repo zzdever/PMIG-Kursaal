@@ -17,14 +17,17 @@ MainWindow::MainWindow(QWidget *parent)
     setObjectName("MainWindow");
     setWindowTitle("PMIG Kursaal");
     setAutoFillBackground(true);
+    setObjectName("MainWindow");
 
+    stackedWidget = new QStackedWidget();
 
-    playGround = new PlayGround("PlayGround");
-    setCentralWidget(playGround);
-    sceneManager = new SceneManager;
+    playGround = new PlayGround("PlayGround", this);
+    //setCentralWidget(playGround);
+    sceneManager = new SceneManager();
     sceneManager->setSceneRect(-SCENE_WIDTH_HALF, -SCENE_HEIGHT_HALF,
                                SCENE_WIDTH_HALF*2, SCENE_WIDTH_HALF*2);
     playGround->setScene(sceneManager);
+    stackedWidget->addWidget(playGround);
 
     centerScribbleArea = new ScribbleArea(this);
     //setCentralWidget(centerScribbleArea);
@@ -42,11 +45,17 @@ MainWindow::MainWindow(QWidget *parent)
     bgPainter.setBrush(QBrush(QColor(245,245,245)));
     bgPainter.drawRect(TILE_SIZE/2, TILE_SIZE/2, TILE_SIZE/2, TILE_SIZE/2);
     QPalette bgPalette;
-    bgPalette.setBrush(QPalette::Background, QBrush(bg));
+    //bgPalette.setBrush(QPalette::Background, QBrush(bg));
+    bgPalette.setBrush(QPalette::Background, QBrush(QImage(":images/bg.png")));
     centerScribbleArea->setPalette(bgPalette);
     playGround->setBackgroundBrush(QBrush(bg));
 
     centerScribbleArea->setFocusPolicy(Qt::WheelFocus);
+
+    stackedWidget->addWidget(centerScribbleArea);
+
+
+    setCentralWidget(stackedWidget);
 
     setupToolBar();
 
@@ -291,9 +300,10 @@ void MainWindow::setupMenuBar()
     printAct->setShortcut(QKeySequence::Print);
     connect(printAct, SIGNAL(triggered()), centerScribbleArea, SLOT(print()));
 
-    exitAct = new QAction(tr("E&xit"), this);
+    exitAct = new QAction(tr("E&xit texture editor"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
-    connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
+    //connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
+    connect(exitAct, SIGNAL(triggered()), this, SLOT(SwitchToKurssal()));
 
 
     QMenu *saveAsMenu = new QMenu(tr("&Save As"), this);
@@ -482,6 +492,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
+
 //void MainWindow::keyPressEvent(QKeyEvent *event)
 //{
 //    if(event->matches(QKeySequence::SelectAll))
@@ -571,3 +582,16 @@ void MainWindow::about()
 //{
 //    return QFileInfo(fullFileName).fileName();
 //}
+
+
+void MainWindow::SwitchToTextureEditing(PolygonItem *item)
+{
+    texturingItem = item;
+    stackedWidget->setCurrentIndex(1);
+}
+
+void MainWindow::SwitchToKurssal()
+{
+    texturingItem->SetTexture(centerScribbleArea->GetQImage());
+    stackedWidget->setCurrentIndex(0);
+}
