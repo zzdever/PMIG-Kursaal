@@ -69,11 +69,15 @@ private:
     PlayGround *playGround;
 
     QTimer *timer;
+    //QBasicTimer videoRecTimer;
+    //int timeCounter;
 
 public:
     /// Constructor
     MainWindow(QWidget *parent = 0);
     //~MainWindow();
+
+    //void timerEvent(QTimerEvent *e);
 
 protected:
     /// Rewrite to handle save or discard before quit

@@ -31,6 +31,7 @@ void SceneManager::Render()
     // It is generally best to keep the time step and iterations fixed.
     scene->Step(timeStep, velocityIterations, positionIterations);
 
+
 #define DEBUG 0
 #if DEBUG
     int i=0;
@@ -64,6 +65,7 @@ void SceneManager::Render()
 
     return;
 }
+
 
 void SceneManager::InitP2DEngine()
 {
@@ -112,7 +114,7 @@ void SceneManager::InitP2DEngine()
 void SceneManager::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     // We can only draw in a blank area.
-    if(event->button() == Qt::LeftButton && itemAt(event->scenePos(), QTransform()) == nullptr){
+    if(event->button() == Qt::LeftButton && itemAt(event->scenePos(), QTransform()) == NULL){
         isDrawing = true;
         drawingItem = new DrawingPolygonItem(QColor(qrand()%255, qrand()%255, qrand()%255), event->scenePos());
         addItem(drawingItem);

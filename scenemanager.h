@@ -5,6 +5,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QTimer>
+#include <QFile>
+#include <QPainter>
 
 #include "playground.h"
 #include "polygonitem.h"
@@ -24,6 +26,7 @@ public:
     SceneManager();
     ~SceneManager();
     void Render();
+
 
 private:
     QGraphicsItem *item;

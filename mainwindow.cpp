@@ -61,12 +61,33 @@ MainWindow::MainWindow(QWidget *parent)
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(RefreshScene()));
     timer->start(20);
+
+    //timeCounter = 0;
+    //videoRecTimer.start(1000*1/30, this);
 }
 
 //MainWindow::~MainWindow()
 //{
 //    ;
 //}
+
+/*
+void MainWindow::timerEvent(QTimerEvent *e)
+{
+    if(e->timerId() == videoRecTimer.timerId()){
+        timeCounter++;
+        if(timeCounter>300){
+            QPixmap pixMap = this->centralWidget()->grab();
+            pixMap.save(QString("C:\\Users\\ying\\output\\%1.png").arg(timeCounter));
+            //qDebug()<<QString("C:\\Users\\ying\\output\\%1.png").arg(timeCounter);
+            //image->save(QString("C:\\Users\\ying\\output\\%1.png").arg(timeCounter));
+        }
+
+        videoRecTimer.start(1000*1/30, this);
+    }
+}
+*/
+
 
 /// @brief Used to generate the color button on the toolbox
 ///

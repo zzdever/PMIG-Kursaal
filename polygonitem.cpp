@@ -79,8 +79,8 @@ void PolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     // I think this is not necessary but not sure there is no problem.
 
     if((int)timer.GetMilliseconds() % (500)==0){
-        qDebug()<<"this position"<<this->pos();
-        qDebug()<<"get position"<<CoordinateInterface::MapToScene(body->GetPosition());
+        //qDebug()<<"this position"<<this->pos();
+        //qDebug()<<"get position"<<CoordinateInterface::MapToScene(body->GetPosition());
     }
 
     QColor c = (option->state & QStyle::State_MouseOver && P2D_STATIC_BODY != body->GetType()) ?
@@ -113,7 +113,7 @@ void PolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         painter->setPen(p);
         painter->setBrush(b);
 
-        painter->drawRect(boundingRect());
+        //painter->drawRect(boundingRect());
     }   
 }
 
@@ -162,6 +162,7 @@ qDebug()<<"bounding area"<<(aabb->lowerBound.x - aabb->upperBound.x)*(aabb->lowe
     path.moveTo(CoordinateInterface::MapToScene(polygonObject.GetVertex(0)));
     for (int i = 1; i < count; ++i)
         path.lineTo(CoordinateInterface::MapToScene(polygonObject.GetVertex(i)));
+    path.lineTo(CoordinateInterface::MapToScene(polygonObject.GetVertex(0)));
 
 
 
