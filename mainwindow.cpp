@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     setCentralWidget(stackedWidget);
+    stackedWidget->setCurrentIndex(1);
 
     setupToolBar();
 
@@ -485,11 +486,14 @@ void MainWindow::setupWindowWidgets()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    event->accept();
+    /*
     if (maybeSave()) {
         event->accept();
     } else {
         event->ignore();
     }
+    */
 }
 
 
@@ -501,7 +505,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::openFile()
 {
-    if (maybeSave()) {
+    //if (maybeSave())
+    {
         QString fileName = QFileDialog::getOpenFileName(this,
                                    tr("Open File"), QDir::currentPath());
         if (!fileName.isEmpty())
@@ -515,7 +520,6 @@ void MainWindow::openFile()
 /// @param [in] fileFormat Indicate in which file format to save
 bool MainWindow::saveWrite(const QByteArray fileFormat)
 {
-
     QString initialPath = QDir::currentPath() + "/untitled." + fileFormat;
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"),
@@ -523,6 +527,7 @@ bool MainWindow::saveWrite(const QByteArray fileFormat)
                                tr("%1 Files (*.%2);;All Files (*)")
                                .arg(QString::fromLatin1(fileFormat.toUpper()))
                                .arg(QString::fromLatin1(fileFormat)));
+
     if (fileName.isEmpty()) {
         return false;
     } else {

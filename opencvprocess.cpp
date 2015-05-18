@@ -17,29 +17,48 @@
 /// @retval false Fail to open
 bool ScribbleArea::openImage(const QString &fileName)
 {
-    if(totalImageNum == 1)
-    {
-        QMessageBox *tmpMessage = new QMessageBox(this);
-        tmpMessage->setText("Sorry, currently only one layer is supported.");
-        tmpMessage->show();
-        return false;
-    }
-
     IplImage *img = cvLoadImage(fileName.toStdString().c_str());
     if(img)
     {
+        if(imageStackEdit.size()>0)
+            imageStackEdit.pop_back();
         imageStackEdit.append(img);
 
-        totalImageNum++;
-        currentImageNum = totalImageNum-1;
+        if(0==totalImageNum){
+            totalImageNum++;
+            currentImageNum = totalImageNum-1;
+        }
+
         updateDisplay(currentImageNum);
         return true;
-    }
-    else
-    {
+    } else {
         qDebug()<<"Unable to load image "<<fileName;
         return false;
     }
+
+//    if(totalImageNum == 1)
+//    {
+//        QMessageBox *tmpMessage = new QMessageBox(this);
+//        tmpMessage->setText("Sorry, currently only one layer is supported.");
+//        tmpMessage->show();
+//        return false;
+//    }
+
+//    IplImage *img = cvLoadImage(fileName.toStdString().c_str());
+//    if(img)
+//    {
+//        imageStackEdit.append(img);
+
+//        totalImageNum++;
+//        currentImageNum = totalImageNum-1;
+//        updateDisplay(currentImageNum);
+//        return true;
+//    }
+//    else
+//    {
+//        qDebug()<<"Unable to load image "<<fileName;
+//        return false;
+//    }
 
 //    QSize newSize = loadedImage.size().expandedTo(size());
 //    resizeImage(&loadedImage, newSize);
