@@ -133,7 +133,7 @@ void PolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     }   
 }
 
-void PolygonItem::BindP2DBody(P2DScene* scene, QVector<QPointF> points, P2DBodyType bodyType)
+void PolygonItem::BindP2DBody(P2DScene* scene, QVector<QPointF> points, P2DBodyType bodyType, float restitution, float friction)
 {
     // Define the polygon shape for our dynamic body.
     P2DPolygonObject polygonObject;
@@ -193,11 +193,12 @@ qDebug()<<"bounding area"<<(aabb->lowerBound.x - aabb->upperBound.x)*(aabb->lowe
     // Define the dynamic body fixture.
     P2DFixtureDef fixtureDef;
     fixtureDef.shape = &polygonObject;
+    fixtureDef.restitution = restitution;
     // Set the box density to be non-zero, so it will be dynamic.
     if(bodyType == P2D_DYNAMIC_BODY)
         fixtureDef.density = 1.0f;
     // Override the default friction.
-    fixtureDef.friction = 0.9f;
+    fixtureDef.friction = friction;
 
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
@@ -212,6 +213,20 @@ qDebug()<<"bounding area"<<(aabb->lowerBound.x - aabb->upperBound.x)*(aabb->lowe
     body->SetTransform(xf.position, 0);
     qDebug()<<"get position 2"<<CoordinateInterface::MapToScene(this->GetP2DBody()->GetPosition());
     */
+}
+
+void PolygonItem::Translate(QPointF translate)
+{
+    P2DTransform xf = body->GetTransform();
+    body->SetTransform(CoordinateInterface::MapToEngine(CoordinateInterface::MapToScene(xf.position) + translate),
+                       xf.rotation.GetAngle());
+}
+
+void PolygonItem::Rotate(double deg)
+{
+    P2DTransform xf = body->GetTransform();
+    xf.SetAngle(CoordinateInterface::DegToRad(deg));
+    body->SetTransform(xf.position, xf.rotation.GetAngle());
 }
 
 void PolygonItem::mousePressEvent(QGraphicsSceneMouseEvent *event)

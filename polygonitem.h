@@ -22,11 +22,15 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget);
 
 public: /*Related to p2dengine*/
-    void BindP2DBody(P2DScene *scene, QVector<QPointF> points, P2DBodyType bodyType = P2D_DYNAMIC_BODY);
+    void BindP2DBody(P2DScene *scene, QVector<QPointF> points,
+                     P2DBodyType bodyType = P2D_DYNAMIC_BODY, float restitution=0.2, float friction = 0.5);
     P2DBody* GetP2DBody(){return body;}
     void SetTexture(QImage& tex) {
         texture = (tex.copy(0,0,tex.width(),tex.height()));
     }
+
+    void Translate(QPointF translate);
+    void Rotate(double deg);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

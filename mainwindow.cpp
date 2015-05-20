@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     setCentralWidget(stackedWidget);
-    stackedWidget->setCurrentIndex(1);
+    //stackedWidget->setCurrentIndex(1);
 
     setupToolBar();
 
@@ -351,6 +351,27 @@ void MainWindow::setupMenuBar()
     filterAct = new QAction(tr("Grab Cut"), this);
     connect(filterAct, SIGNAL(triggered()), centerScribbleArea, SLOT(grabcutFilter()));
     filterMenu->addAction(filterAct);
+
+
+
+    loadSceneMenu = new QMenu(tr("&Scene"), this);
+    menuBar()->addMenu(loadSceneMenu);
+
+    QAction *loadAct = new QAction(tr("Load Ground"), this);
+    connect(loadAct, &QAction::triggered, sceneManager, &SceneManager::LoadGround);
+    loadSceneMenu->addAction(loadAct);
+
+    loadAct = new QAction(tr("Load Bouncing Ball"), this);
+    connect(loadAct, &QAction::triggered, sceneManager, &SceneManager::LoadBouncingBall);
+    loadSceneMenu->addAction(loadAct);
+
+    loadAct = new QAction(tr("Load Domino"), this);
+    connect(loadAct, &QAction::triggered, sceneManager, &SceneManager::LoadDomino);
+    loadSceneMenu->addAction(loadAct);
+
+    loadAct = new QAction(tr("Load Slide"), this);
+    connect(loadAct, &QAction::triggered, sceneManager, &SceneManager::LoadSlide);
+    loadSceneMenu->addAction(loadAct);
 
 
 

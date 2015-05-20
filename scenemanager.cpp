@@ -88,6 +88,8 @@ void SceneManager::InitP2DEngine()
     // Construct a world object, which will hold and simulate the rigid bodies.
     scene = new P2DScene(gravity);
 
+    LoadGround();
+
     /*
     // Define the ground body.
     P2DBodyDef groundBodyDef;
@@ -105,15 +107,39 @@ void SceneManager::InitP2DEngine()
     groundBody->CreateFixture(&groundBox, 0.0f);
     */
 
-    // Add the ground body.
-    polyItem = new PolygonItem(QColor(21,25,123), this);
-    QVector<QPointF> points;
-    points.push_back(QPointF(-SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*4/5));
-    points.push_back(QPointF(SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*4/5));
-    points.push_back(QPointF(SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*5/5));
-    points.push_back(QPointF(-SCENE_WIDTH_HALF, SCENE_HEIGHT_HALF*5/5));
-    polyItem->BindP2DBody(scene, points, P2D_STATIC_BODY);
-    addItem(polyItem);
+
+
+    /*
+    // add a bunch of particles
+    const int len = 7, step = len*2+5;
+    qDebug()<< "len" << len;
+    for(int i=-10*step;i<10*step;i+=step)
+        for(int j=-10*step;j<10*step;j+=step)
+    {
+        polyItem = new PolygonItem(QColor(10,10,240), this);
+        QVector<QPointF> points;
+        points.push_back(QPointF(len+i,len+j));
+        points.push_back(QPointF(-len+i,len+j));
+        points.push_back(QPointF(-len+i,-len+j));
+        points.push_back(QPointF(len+i,-len+j));
+        polyItem->BindP2DBody(scene, points, P2D_DYNAMIC_BODY);
+        addItem(polyItem);
+    }
+    */
+}
+
+void SceneManager::ClearScene()
+{
+    QList<QGraphicsItem *> allItems;
+    allItems = this->items();
+    foreach(QGraphicsItem* item, allItems){
+        //if(static_cast<PolygonItem*>(item)->GetP2DBody()->GetType() != P2D_STATIC_BODY){
+        {
+            removeItem(item);
+            if(item) delete item;
+        }
+    }
+    return;
 }
 
 void SceneManager::contextMenuEvent(QGraphicsSceneContextMenuEvent* e)
@@ -124,14 +150,7 @@ void SceneManager::contextMenuEvent(QGraphicsSceneContextMenuEvent* e)
 
         QAction *selectedAction = menu.exec(e->screenPos());
         if(selectedAction == clearAction){
-            QList<QGraphicsItem *> allItems;
-            allItems = this->items();
-            foreach(QGraphicsItem* item, allItems){
-                if(static_cast<PolygonItem*>(item)->GetP2DBody()->GetType() != P2D_STATIC_BODY){
-                    removeItem(item);
-                    if(item) delete item;
-                }
-            }
+            ClearScene();
         } else {}
     }
 
@@ -186,6 +205,108 @@ void SceneManager::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 }
 
 
+void SceneManager::LoadGround(void)
+{
+    ClearScene();
+    // Add the ground body.
+    polyItem = new PolygonItem(QColor(21,25,123), this);
+    QVector<QPointF> points;
+    points.push_back(QPointF(-SCENE_WIDTH_HALF*3, SCENE_HEIGHT_HALF*4/5));
+    points.push_back(QPointF(SCENE_WIDTH_HALF*3, SCENE_HEIGHT_HALF*4/5));
+    points.push_back(QPointF(SCENE_WIDTH_HALF*3, SCENE_HEIGHT_HALF*5/5));
+    points.push_back(QPointF(-SCENE_WIDTH_HALF*3, SCENE_HEIGHT_HALF*5/5));
+    polyItem->BindP2DBody(scene, points, P2D_STATIC_BODY);
+    addItem(polyItem);
+}
+
+void SceneManager::LoadBouncingBall(void)
+{
+    LoadGround();
+
+    // Add balls.
+    for(int j=0; j<10; j++){
+        polyItem = new PolygonItem(QColor(qrand()%255, qrand()%255, qrand()%255), this);
+        QVector<QPointF> points;
+        const int segments = 20;
+        for(int i=0; i < segments; i++){
+            points.push_back(QPointF(50*cos(360*i/segments) + (j-5)*120, 50*sin(360*i/segments) - 200));
+        }
+        polyItem->BindP2DBody(scene, points, P2D_DYNAMIC_BODY, 1.0*j/10);
+        addItem(polyItem);
+    }
+
+}
+
+void SceneManager::LoadDomino(void)
+{
+    LoadGround();
+
+    // Add dominoes.
+    const int width = 40, height = 300;
+    int xOffset = -SCENE_WIDTH_HALF*3;
+    for(int i=0; i<50; i++){
+        xOffset += width*3;
+        polyItem = new PolygonItem(QColor(qrand()%255, qrand()%255, qrand()%255), this);
+        QVector<QPointF> points;
+        points.push_back(QPointF(width/2 + xOffset, SCENE_HEIGHT_HALF*4/5));
+        points.push_back(QPointF(width/2 + xOffset, SCENE_HEIGHT_HALF*4/5 - height));
+        points.push_back(QPointF(-width/2 + xOffset, SCENE_HEIGHT_HALF*4/5 - height));
+        points.push_back(QPointF(-width/2 + xOffset, SCENE_HEIGHT_HALF*4/5));
+        polyItem->BindP2DBody(scene, points, P2D_DYNAMIC_BODY,0.5,0.1);
+        addItem(polyItem);
+    }
+}
+
+void SceneManager::LoadSlide(void)
+{
+    LoadGround();
+
+    // Add a box.
+    polyItem = new PolygonItem(QColor(qrand()%255, qrand()%255, qrand()%255), this);
+    QVector<QPointF> points;
+    QRect rec(0,0, 100, 100);
+    points.push_back(rec.bottomLeft());
+    points.push_back(rec.bottomRight());
+    points.push_back(rec.topRight());
+    points.push_back(rec.topLeft());
+    polyItem->BindP2DBody(scene, points, P2D_DYNAMIC_BODY,0.1,0.5);
+    polyItem->Rotate(30);
+    polyItem->Translate(QPointF(-300, -300));
+    addItem(polyItem);
+
+
+    //QVector<QRect> rects;
+    rec = (QRect(-300,0, 600, 30));
+    QVector<double> rotations;
+    rotations.push_back(30);
+    rotations.push_back(-30);
+    rotations.push_back(30);
+
+    QVector<float> frictions;
+    frictions.push_back(0.1);
+    frictions.push_back(0.5);
+    frictions.push_back(0.9);
+
+    QVector<QPointF> translations;
+    translations.push_back(QPointF(-150,0));
+    translations.push_back(QPointF(150,300));
+    translations.push_back(QPointF(-150,600));
+
+    for(int i=0; i<rotations.size(); i++){
+        polyItem = new PolygonItem(QColor(qrand()%255, qrand()%255, qrand()%255), this);
+        QVector<QPointF> points;
+        //rec = rects.at(i);
+        points.push_back(rec.bottomLeft());
+        points.push_back(rec.bottomRight());
+        points.push_back(rec.topRight());
+        points.push_back(rec.topLeft());
+        polyItem->BindP2DBody(scene, points, P2D_STATIC_BODY, 0.1, frictions.at(i));
+        polyItem->Rotate(rotations.at(i));
+        polyItem->Translate(translations.at(i));
+        addItem(polyItem);
+    }
+
+}
 
 
 DrawingPolygonItem::DrawingPolygonItem(QColor color, QPointF p)

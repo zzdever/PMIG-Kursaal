@@ -66,6 +66,7 @@ private:
     QMenu *filterMenu;  ///<  Menu Filter
     QMenu *windowWidgetMenu;  ///< Menu Window
     QMenu *aboutMenu;   ///< Menu about
+    QMenu *loadSceneMenu;  ///< Menu File
 
     QStackedWidget *stackedWidget;
     SceneManager *sceneManager;

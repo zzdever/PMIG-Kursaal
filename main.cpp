@@ -15,7 +15,8 @@ int main(int argc, char *argv[])
 //    splash->setPixmap(QPixmap(":images/bg.png"));
 //    splash->show();
     app.setOrganizationName("PMIG Project");
-    app.setApplicationName("PMIG");
+    app.setApplicationName("PMIG Kursaal");
+    app.setWindowIcon(QIcon(":/images/icon.png"));
     MainWindow mainWin;
     //mainWin.resize(1024,576);
     mainWin.setWindowState(Qt::WindowMaximized);

@@ -165,7 +165,7 @@ void PlayGround::setupMatrix()
 
     setMatrix(matrix);
 
-    if(zoomAmount<0) zoomAmount = 0;
+    if(zoomAmount<-3.0) zoomAmount = -3.0;
     if(zoomAmount>3.0) zoomAmount = 3.0;
 }
 

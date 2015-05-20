@@ -7,5 +7,6 @@
         <file>images/pen-tool.png</file>
         <file>images/transform-tool.png</file>
         <file>images/lasso-tool.png</file>
+        <file>images/icon.png</file>
     </qresource>
 </RCC>

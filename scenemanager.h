@@ -22,6 +22,7 @@
 class DrawingPolygonItem;
 
 class SceneManager : public QGraphicsScene{
+
 public:
     SceneManager();
     ~SceneManager();
@@ -52,11 +53,19 @@ private: /*Related to p2dengine*/
     int32 positionIterations;
 
     void InitP2DEngine();
+    void ClearScene();
+
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
+public: /*Scene presets*/
+    void LoadGround(void);
+    void LoadBouncingBall(void);
+    void LoadDomino(void);
+    void LoadSlide(void);
 
 };
 
