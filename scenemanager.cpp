@@ -308,6 +308,78 @@ void SceneManager::LoadSlide(void)
 
 }
 
+void SceneManager::LoadLever()
+{
+    LoadGround();
+
+    // Add a support point.
+    polyItem = new PolygonItem(QColor(qrand()%255, qrand()%255, qrand()%255), this);
+    QVector<QPointF> points;
+    points.push_back(QPointF(-40,0));
+    points.push_back(QPointF(40,0));
+    points.push_back(QPointF(0,-100));
+    polyItem->BindP2DBody(scene, points, P2D_STATIC_BODY,0.1,0.9);
+    polyItem->Translate(QPointF(0, 770));
+    addItem(polyItem);
+
+    // Add the lever.
+    polyItem = new PolygonItem(QColor(qrand()%255, qrand()%255, qrand()%255), this);
+    QRect rec(0,0, 1000, 50);
+    points.clear();
+    points.push_back(rec.bottomLeft());
+    points.push_back(rec.bottomRight());
+    points.push_back(rec.topRight());
+    points.push_back(rec.topLeft());
+    polyItem->BindP2DBody(scene, points, P2D_DYNAMIC_BODY,0.1,0.5);
+    polyItem->Translate(QPointF(-200, 500));
+    addItem(polyItem);
+}
+
+void SceneManager::LoadManyMany()
+{
+    LoadGround();
+
+    QVector<QPointF> points;
+
+    // Add many small balls.
+    for(int j=-7; j<7; j++){
+        for(int k=-7; k<7; k++){
+            polyItem = new PolygonItem(QColor(qrand()%255, qrand()%255, qrand()%255), this);
+            const int segments = 20;
+            points.clear();
+            for(int i=0; i < segments; i++){
+                points.push_back(QPointF(30*cos(360*i/segments) + k*120, 30*sin(360*i/segments) - j*120));
+            }
+            polyItem->BindP2DBody(scene, points, P2D_DYNAMIC_BODY, 1.0);
+            polyItem->Translate(QPointF(0, -700));
+            addItem(polyItem);
+        }
+    }
+
+    // Add walls.
+    /*
+    polyItem = new PolygonItem(QColor(qrand()%255, qrand()%255, qrand()%255), this);
+    QRect rec(0,0, 50, 1000);
+    points.clear();
+    points.push_back(rec.bottomLeft());
+    points.push_back(rec.bottomRight());
+    points.push_back(rec.topRight());
+    points.push_back(rec.topLeft());
+    polyItem->BindP2DBody(scene, points, P2D_STATIC_BODY,0.1,0.5);
+    polyItem->Translate(QPointF(-1000, 0));
+    addItem(polyItem);
+
+    polyItem = new PolygonItem(QColor(qrand()%255, qrand()%255, qrand()%255), this);
+    points.clear();
+    points.push_back(rec.bottomLeft());
+    points.push_back(rec.bottomRight());
+    points.push_back(rec.topRight());
+    points.push_back(rec.topLeft());
+    polyItem->BindP2DBody(scene, points, P2D_STATIC_BODY,0.1,0.5);
+    polyItem->Translate(QPointF(1000, 0));
+    addItem(polyItem);
+    */
+}
 
 DrawingPolygonItem::DrawingPolygonItem(QColor color, QPointF p)
 {

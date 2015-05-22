@@ -66,7 +66,8 @@ public: /*Scene presets*/
     void LoadBouncingBall(void);
     void LoadDomino(void);
     void LoadSlide(void);
-
+    void LoadLever(void);
+    void LoadManyMany(void);
 };
 
 

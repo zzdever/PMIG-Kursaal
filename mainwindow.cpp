@@ -373,6 +373,14 @@ void MainWindow::setupMenuBar()
     connect(loadAct, &QAction::triggered, sceneManager, &SceneManager::LoadSlide);
     loadSceneMenu->addAction(loadAct);
 
+    loadAct = new QAction(tr("Load Lever"), this);
+    connect(loadAct, &QAction::triggered, sceneManager, &SceneManager::LoadLever);
+    loadSceneMenu->addAction(loadAct);
+
+    loadAct = new QAction(tr("Load Many Many"), this);
+    connect(loadAct, &QAction::triggered, sceneManager, &SceneManager::LoadManyMany);
+    loadSceneMenu->addAction(loadAct);
+
 
 
     windowWidgetMenu = menuBar()->addMenu(tr("&Window"));
